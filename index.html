@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}
+.gate { display: grid; gap: 16px; padding-block: 12px 4px; }
+.gate-row { display: flex; gap: 10px; flex-wrap: wrap; max-width: 520px; }
+.gate-row .text { flex: 1 1 240px; }
+</style>
+<title>Design Partner Priorities</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: Lua Invest letterhead, three views (rank / how it works / results); the form is a five-step wizard, one question per screen */
+:root {
+  --bg: #f6f6fa; --surface: #ffffff; --text: #1f2333; --ink: #15151c; --muted: #4b5563; --faint: #6b7280;
+  --line: rgba(17,24,39,.10); --tint: #eef0ff; --tint-2: #faf7ff;
+  --indigo: #5457d6; --blue: #2563eb; --purple: #7c3aed; --pink: #f9227f; --orange: #ff6811;
+  --ok: #15803d; --warn: #b45309; --bad: #b91c1c;
+  --grad: linear-gradient(90deg,#FFA433 0%,#FF6811 14%,#FF0A3E 28%,#F9227F 43%,#D742BF 57%,#9561F8 71%,#2A87FD 85%,#36ADFF 100%);
+  --exgrad: linear-gradient(90deg,#7C3AED 0%,#E91E63 40%,#FF3D7F 65%,#FF7A1A 100%);
+  --font: "Onest", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e0f1c; --surface: #171829; --text: #e6e7f2; --ink: #f4f4fa; --muted: #b1b4c9; --faint: #9295ad;
+  --line: rgba(255,255,255,.11); --tint: #22234a; --tint-2: #1d1a33;
+  --indigo: #9497f5; --blue: #6aa7ff; --purple: #b195fb; --pink: #ff6aa8; --orange: #ff9a5a;
+  --ok: #5fd08a; --warn: #f2b45a; --bad: #f58a8a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e0f1c; --surface: #171829; --text: #e6e7f2; --ink: #f4f4fa; --muted: #b1b4c9; --faint: #9295ad;
+  --line: rgba(255,255,255,.11); --tint: #22234a; --tint-2: #1d1a33;
+  --indigo: #9497f5; --blue: #6aa7ff; --purple: #b195fb; --pink: #ff6aa8; --orange: #ff9a5a;
+  --ok: #5fd08a; --warn: #f2b45a; --bad: #f58a8a; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.gradbar { height: 4px; background: var(--grad); }
+.wrap { max-width: 960px; margin: 0 auto; padding-block: 28px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+h1, h2, h3 { margin: 0; color: var(--ink); text-wrap: balance; letter-spacing: -.02em; line-height: 1.18; }
+h1 { font-size: clamp(1.8rem, 4.5vw, 2.5rem); font-weight: 800; }
+h1 .g { background: var(--exgrad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+h2 { font-size: 1.45rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+.eyebrow { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.muted { color: var(--muted); }
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+
+/* letterhead */
+.letterhead { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.mark { width: 34px; height: 34px; flex: none; }
+.word { font-weight: 800; font-size: 1.4rem; letter-spacing: -.02em; color: var(--ink); line-height: 1; }
+.word .inv { margin-left: .25em; font-weight: 700; letter-spacing: .02em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.doctype { margin-left: auto; font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); padding: 5px 11px; border: 1px solid var(--line); border-radius: 100px; }
+.intro { display: grid; gap: 10px; }
+.intro .lede { font-size: 1.08rem; color: var(--muted); }
+
+/* tabs */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.tab { background: none; border: 0; padding: 10px 14px; font-weight: 600; color: var(--faint); border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--purple); }
+.tab .lock { font-size: .7rem; color: var(--purple); margin-left: 6px; font-weight: 600; }
+
+/* wizard */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: clamp(18px, 4vw, 30px); display: grid; gap: 20px; }
+.progress { display: grid; gap: 8px; }
+.progress .track { height: 6px; border-radius: 6px; background: var(--tint); overflow: hidden; }
+.progress .fill { height: 100%; background: var(--grad); border-radius: 6px; transition: width .25s ease; }
+.progress .lbl { display: flex; justify-content: space-between; font-size: .82rem; color: var(--faint); font-weight: 500; }
+.q { display: grid; gap: 10px; }
+.q > label, .q .qt { font-weight: 700; color: var(--ink); font-size: 1.05rem; }
+.q .help { font-size: .9rem; color: var(--muted); margin-top: -4px; }
+.text { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px; background: var(--bg); }
+textarea.text { min-height: 84px; resize: vertical; }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt { border: 1.5px solid var(--line); background: var(--surface); border-radius: 100px; padding: 8px 15px; cursor: pointer; font-weight: 500; font-size: .94rem; }
+.opt:hover { border-color: var(--indigo); }
+.opt[aria-pressed="true"], .opt[aria-checked="true"] { border-color: var(--purple); background: var(--tint); color: var(--ink); font-weight: 600; }
+.counter { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-weight: 600; }
+.dots { display: flex; gap: 5px; }
+.dots i { width: 22px; height: 6px; border-radius: 6px; background: var(--tint); display: block; }
+.dots i.on { background: var(--purple); }
+.group { display: grid; gap: 8px; }
+.group h3 { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--indigo); margin-top: 6px; }
+.items { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
+.item { text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: 12px; padding: 12px 14px 12px 44px; cursor: pointer; position: relative; display: grid; gap: 3px; min-width: 0; }
+.item:hover:not(:disabled) { border-color: var(--indigo); }
+.item::before { content: ""; position: absolute; left: 14px; top: 14px; width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--faint); }
+.item[aria-pressed="true"] { border-color: var(--purple); background: var(--tint-2); }
+.item[aria-pressed="true"]::before { background: var(--purple); border-color: var(--purple); }
+.item[aria-pressed="true"]::after { content: ""; position: absolute; left: 20px; top: 17px; width: 5px; height: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.item:disabled { opacity: .45; cursor: not-allowed; }
+.item b { color: var(--ink); font-weight: 600; }
+.item span { font-size: .87rem; color: var(--muted); }
+.other { display: grid; gap: 8px; border: 1.5px dashed var(--line); border-radius: 12px; padding: 12px 14px; }
+.order { display: grid; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.order li { display: grid; grid-template-columns: 40px minmax(0,1fr) auto; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--surface); }
+.order .rk { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--tint); color: var(--purple); }
+.order li:first-child .rk { background: var(--purple); color: #fff; }
+.order .t { min-width: 0; }
+.order .t b { color: var(--ink); font-weight: 600; display: block; }
+.order .t span { font-size: .85rem; color: var(--muted); }
+.mv { display: flex; gap: 4px; }
+.mv button { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-size: 1rem; }
+.mv button:disabled { opacity: .3; cursor: default; }
+.detail { border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 14px; }
+.detail .head { display: flex; gap: 10px; align-items: center; }
+.detail .head .rk { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--tint); color: var(--purple); font-size: .9rem; }
+.detail .sub { font-weight: 600; font-size: .92rem; color: var(--ink); }
+.nav { display: flex; gap: 10px; justify-content: space-between; align-items: center; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 18px; }
+.btn { border: 0; border-radius: 10px; padding: 12px 20px; font-weight: 700; cursor: pointer; }
+.btn.primary { background: var(--purple); color: #fff; }
+.btn.primary:disabled { opacity: .5; cursor: not-allowed; }
+.btn.ghost { background: transparent; border: 1px solid var(--line); color: var(--text); }
+.err { color: var(--bad); font-size: .9rem; font-weight: 500; }
+.note { background: var(--tint); border-radius: 10px; padding: 12px 14px; font-size: .92rem; }
+.review { display: grid; gap: 10px; }
+.review dl { margin: 0; display: grid; grid-template-columns: 150px minmax(0,1fr); gap: 6px 14px; font-size: .94rem; }
+.review dt { color: var(--faint); }
+.review dd { margin: 0; min-width: 0; }
+.review ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.done { text-align: center; display: grid; gap: 12px; justify-items: center; padding-block: 20px; }
+.done .tick { width: 56px; height: 56px; border-radius: 50%; background: var(--grad); display: grid; place-items: center; color: #fff; font-size: 1.6rem; font-weight: 800; }
+
+/* how it works */
+.section { display: grid; gap: 14px; }
+.steps { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 8px; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 4px; align-content: start; font-size: .88rem; }
+.step .n { font-weight: 800; font-size: 1.3rem; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1.1; }
+.step .w { font-size: .74rem; font-weight: 600; color: var(--faint); }
+.step.dl { border-color: var(--purple); }
+.step.dl .w { color: var(--purple); }
+.pillars { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
+.pillar { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: grid; grid-template-rows: auto auto 1fr; min-width: 0; }
+.pillar .top { background: var(--tint); padding: 12px; text-align: center; }
+.pillar .top h3 { color: var(--indigo); }
+.pillar .top div { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+.pillar .pt { font-size: .76rem; text-align: center; padding: 6px 8px; color: var(--pink); border-bottom: 1px solid var(--line); }
+.pillar .body { padding: 12px; display: grid; gap: 10px; align-content: start; font-size: .86rem; }
+.pillar .k { font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); font-weight: 600; margin-bottom: 3px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { font-size: .74rem; border: 1px solid var(--line); border-radius: 100px; padding: 2px 8px; }
+.chip.idea { border-style: dashed; border-color: var(--purple); color: var(--purple); }
+.band { border-radius: 12px; padding: 12px 16px; display: grid; grid-template-columns: 200px minmax(0,1fr); gap: 14px; font-size: .9rem; background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--pink); }
+.band.brand { border-left-color: var(--orange); }
+.band h3 { font-size: 1rem; }
+.callout { border-left: 3px solid var(--purple); background: var(--tint-2); border-radius: 0 10px 10px 0; padding: 12px 16px; font-size: .92rem; }
+.callout b { color: var(--ink); }
+.pill { display: inline-block; font-size: .7rem; font-weight: 600; padding: 1px 8px; border-radius: 100px; border: 1px solid currentColor; white-space: nowrap; }
+.s { color: var(--ok); } .m { color: var(--warn); } .wk { color: var(--bad); } .nb { color: var(--blue); }
+.two { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 8px; align-content: start; font-size: .93rem; }
+.panel ul { margin: 0; padding-left: 1.2em; display: grid; gap: 5px; }
+.formula { font-family: ui-monospace, Menlo, monospace; font-size: .85rem; background: var(--tint); border-radius: 8px; padding: 9px 12px; overflow-x: auto; }
+.tpl { font-family: ui-monospace, Menlo, monospace; font-size: .85rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; line-height: 1.7; overflow-x: auto; }
+.tpl em { font-style: normal; color: var(--purple); }
+
+/* results */
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.kpi .v { font-size: 1.7rem; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+.kpi .l { font-size: .82rem; color: var(--faint); }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: .9rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); font-weight: 600; background: var(--tint-2); }
+tr:last-child td { border-bottom: 0; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr.top td { background: var(--tint-2); }
+.small { font-size: .8rem; color: var(--faint); }
+.empty { border: 1.5px dashed var(--line); border-radius: 12px; padding: 24px; text-align: center; color: var(--muted); }
+
+footer { border-top: 1px solid var(--line); padding-top: 14px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: .82rem; color: var(--faint); }
+
+@media (max-width: 820px) {
+  .items, .two { grid-template-columns: minmax(0,1fr); }
+  .pillars, .steps { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .band { grid-template-columns: minmax(0,1fr); gap: 4px; }
+  .review dl { grid-template-columns: minmax(0,1fr); }
+  .review dt { margin-top: 6px; }
+}
+@media (max-width: 480px) {
+  .pillars, .steps, .kpis { grid-template-columns: minmax(0,1fr); }
+  .order li { grid-template-columns: 34px minmax(0,1fr); }
+  .order .mv { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) { .progress .fill { transition: none; } }
+
+/* firm-agnostic additions */
+.anon { display: flex; gap: 10px; align-items: flex-start; }
+.anon b { color: var(--ink); }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.agentmap { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+.stage { display: grid; grid-template-columns: 110px minmax(0,1fr); gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: .88rem; }
+.stage:first-of-type { border-top: 0; }
+.stage .sn { font-weight: 700; color: var(--indigo); }
+@media (max-width: 820px) { .agentmap { grid-template-columns: minmax(0,1fr); } }
+
+/* org chart and tap-to-rank */
+.org { display: grid; justify-items: center; }
+.org-root { background: var(--surface); border: 2px solid var(--purple); border-radius: 12px; padding: 10px 22px; font-weight: 800; color: var(--ink); text-align: center; max-width: 100%; overflow-wrap: anywhere; }
+.org-stem { width: 2px; height: 22px; background: var(--faint); opacity: .5; }
+.org-row { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; width: 100%; padding-top: 22px; }
+.org-row::before { content: ""; position: absolute; top: 0; left: 25%; right: 25%; height: 2px; background: var(--faint); opacity: .5; }
+.org-col { position: relative; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.org-col::before { content: ""; position: absolute; top: -22px; left: 50%; width: 2px; height: 22px; background: var(--faint); opacity: .5; }
+.org-team { position: relative; display: grid; gap: 3px; text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: 14px; padding: 16px 16px 16px 50px; cursor: pointer; }
+.org-team:hover { border-color: var(--indigo); }
+.org-team .ot-check { position: absolute; left: 16px; top: 18px; width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--faint); }
+.org-team[aria-pressed="true"] { border-color: var(--purple); background: var(--tint-2); box-shadow: 0 0 0 3px var(--tint); }
+.org-team[aria-pressed="true"] .ot-check { background: var(--purple); border-color: var(--purple); }
+.org-team[aria-pressed="true"] .ot-check::after { content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.ot-name { font-weight: 800; font-size: 1.12rem; color: var(--ink); }
+.ot-sub { font-size: .78rem; font-weight: 600; letter-spacing: .04em; color: var(--purple); }
+.ot-d { font-size: .88rem; color: var(--muted); }
+.org-peek { justify-self: start; background: none; border: 0; padding: 4px 2px; color: var(--indigo); font-weight: 600; font-size: .88rem; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 6px; }
+.tile { border: 1px solid var(--line); background: var(--bg); border-radius: 9px; padding: 8px 10px; display: grid; gap: 1px; min-width: 0; }
+.tile b { font-size: .84rem; color: var(--ink); font-weight: 600; }
+.tile span { font-size: .74rem; color: var(--muted); line-height: 1.35; }
+.rank-team { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; }
+.rt-head { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.rank-list { display: grid; gap: 8px; }
+.rank-opt { display: grid; grid-template-columns: 38px minmax(0,1fr); gap: 12px; align-items: center; text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: 12px; padding: 10px 12px; cursor: pointer; }
+.rank-opt:hover:not(:disabled) { border-color: var(--indigo); }
+.rank-opt .rb { width: 34px; height: 34px; border-radius: 50%; border: 1.5px dashed var(--faint); display: grid; place-items: center; font-weight: 800; font-size: .9rem; color: #fff; }
+.rank-opt[aria-pressed="true"] { border-color: var(--purple); background: var(--tint-2); }
+.rank-opt[aria-pressed="true"] .rb { background: var(--purple); border: 0; }
+.rank-opt:disabled { opacity: .45; cursor: not-allowed; }
+.rank-opt .rt { min-width: 0; }
+.rank-opt .rt b { display: block; color: var(--ink); font-weight: 600; }
+.rank-opt .rt span { font-size: .86rem; color: var(--muted); }
+@media (max-width: 600px) {
+  .org-row { grid-template-columns: minmax(0,1fr); }
+  .org-row::before, .org-col::before { display: none; }
+}
+
+/* drag-to-rank */
+.zone-label { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; color: var(--faint); margin-top: 4px; }
+.top-zone, .pool { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.top-zone { min-height: calc(var(--slots) * 62px + (var(--slots) - 1) * 8px + 16px); padding: 8px; border: 2px dashed var(--purple); border-radius: 14px; background: var(--tint-2); align-content: start; position: relative; }
+.top-zone:empty::before { content: "Drag your #1 outcome here"; position: absolute; inset: 0; display: grid; place-items: center; color: var(--purple); font-weight: 600; font-size: .92rem; }
+.top-zone.full { border-style: solid; }
+.rank-opt { grid-template-columns: 38px minmax(0,1fr) auto !important; touch-action: none; user-select: none; -webkit-user-select: none; }
+.pool .rank-opt { cursor: grab; }
+.pool .rank-opt[aria-disabled="true"] { opacity: .55; cursor: grab; }
+.rank-opt.ranked { border-color: var(--purple); background: var(--surface); cursor: grab; }
+.rank-opt.ranked .rb { background: var(--purple); border: 0; }
+.rank-opt .rb.grip { color: var(--faint); border-style: solid; border-color: var(--line); font-size: .8rem; letter-spacing: -2px; }
+.rank-opt .mv { display: flex; gap: 4px; }
+.rank-opt .mv button { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-size: .9rem; }
+.rank-opt .mv button:disabled { opacity: .3; cursor: default; }
+.drag-ghost { opacity: .35; }
+.drag-chosen { box-shadow: 0 8px 24px rgba(17,24,39,.18); }
+@media (max-width: 480px) { .rank-opt { grid-template-columns: 34px minmax(0,1fr) !important; } .rank-opt .mv { grid-column: 2; } }
+
+.tile.potential { border-style: dashed; border-color: var(--purple); background: var(--tint-2); }
+.ptag { font-style: normal; font-size: .68rem; font-weight: 600; color: var(--purple); border: 1px dashed var(--purple); border-radius: 100px; padding: 0 7px; margin-left: 6px; white-space: nowrap; vertical-align: middle; }
+
+[hidden] { display: none !important; }
+/* intro slides */
+.slide { display: grid; gap: 18px; align-content: start; min-height: 440px; }
+.kicker { font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--purple); }
+h2.big { font-size: clamp(1.7rem, 4.6vw, 2.6rem); font-weight: 800; letter-spacing: -.025em; line-height: 1.12; }
+h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.slide .lede { font-size: 1.1rem; color: var(--muted); max-width: 62ch; }
+.pcards { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+.pcard { border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 6px; align-content: start; background: var(--tint-2); }
+.pcard .pn { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--indigo); }
+.pcard b { color: var(--ink); font-size: 1.05rem; }
+.pcard span:last-child { font-size: .9rem; color: var(--muted); }
+.compare { display: grid; gap: 6px; }
+.crow { display: grid; grid-template-columns: 150px minmax(0,1fr) 22px minmax(0,1.35fr); gap: 12px; align-items: center; padding: 10px 14px; border-radius: 10px; background: var(--bg); font-size: .9rem; }
+.crow.head { background: none; padding-block: 0; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; color: var(--faint); }
+.crow b { color: var(--ink); }
+.crow .old { color: var(--faint); }
+.crow .arr { font-weight: 800; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.crow .new { color: var(--ink); font-weight: 500; }
+.crow .new em { display: block; font-style: normal; font-size: .76rem; font-weight: 600; color: var(--purple); margin-top: 2px; }
+.sdots { display: flex; gap: 5px; align-items: center; }
+.sdots i { width: 8px; height: 8px; border-radius: 50%; background: var(--tint); display: block; }
+.sdots i.on { background: var(--purple); width: 22px; border-radius: 6px; }
+@media (max-width: 820px) { .pcards { grid-template-columns: minmax(0,1fr); } .slide { min-height: 0; } }
+@media (max-width: 600px) {
+  .crow { grid-template-columns: minmax(0,1fr); gap: 2px; }
+  .crow.head, .crow .arr { display: none; }
+  .crow .old::before { content: "Today: "; }
+}
+
+.phases { display: grid; gap: 8px; margin-top: 4px; }
+.phase-row { display: grid; grid-template-columns: minmax(0,1fr) 28px minmax(0,1fr); gap: 10px; align-items: stretch; }
+.phase { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 5px; align-content: start; background: var(--surface); }
+.phase:last-child { background: var(--tint-2); border-color: var(--purple); }
+.phase .pn { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--indigo); }
+.phase b { color: var(--ink); font-size: 1.05rem; }
+.phase span:last-child { font-size: .9rem; color: var(--muted); }
+.parr { align-self: center; text-align: center; font-weight: 800; font-size: 1.3rem; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.slide .lede b { color: var(--ink); }
+@media (max-width: 600px) { .phase-row { grid-template-columns: minmax(0,1fr); } .parr { transform: rotate(90deg); } }
+
+.trust { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.2fr); gap: 10px; }
+.trust-block { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 10px; align-content: start; }
+.trust-block .pn { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--indigo); }
+.backers { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.backers span { font-weight: 700; font-size: .98rem; color: var(--ink); letter-spacing: -.01em; }
+.trust-block.own { background: var(--tint-2); border-color: var(--purple); }
+.trust-block ul { margin: 0; padding-left: 1.1em; display: grid; gap: 5px; font-size: .9rem; color: var(--muted); }
+.trust-block li b { color: var(--ink); }
+@media (max-width: 820px) { .trust { grid-template-columns: minmax(0,1fr); } }
+
+/* slide 2 network + outcomes */
+.vision { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 16px; align-items: stretch; }
+.net-panel { background: #0e0f1c; border-radius: 16px; padding: 10px 4px 14px; display: grid; gap: 4px; align-content: center; }
+.net { width: 100%; height: auto; display: block; }
+.net .nl { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; letter-spacing: .12em; fill: #e6e7f2; }
+.net .nl.sh { fill: #9a9df5; }
+.net .nl.c { fill: #b1b4c9; font-size: 10px; }
+.net-cap { text-align: center; font-size: .8rem; color: #9295ad; }
+.outcomes { display: grid; gap: 6px; }
+.outcomes .pn { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--indigo); margin-bottom: 2px; }
+.orow { display: grid; gap: 1px; padding: 7px 12px; border-radius: 10px; background: var(--bg); border-left: 3px solid var(--purple); }
+.orow .oa { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--purple); }
+.orow b { color: var(--ink); font-size: .9rem; font-weight: 600; line-height: 1.35; }
+.orow .ot { font-size: .78rem; color: var(--faint); }
+.big-phases .phase { padding: 22px; gap: 8px; }
+.big-phases .phase b { font-size: 1.3rem; }
+.big-phases .phase span:last-child { font-size: 1rem; }
+@media (max-width: 820px) { .vision { grid-template-columns: minmax(0,1fr); } }
+
+/* tools step */
+.toolcat { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; }
+.tc-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.addrow { display: flex; gap: 8px; max-width: 420px; }
+.addrow .text { padding-block: 8px; }
+.addrow .btn { padding: 8px 16px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.toolres { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+.opt[role="checkbox"][aria-checked="true"]::before { content: "✓ "; color: var(--purple); }
+
+.net .nl.ir { fill: #ff8fbd; }
+.hier { display: grid; justify-items: center; gap: 0; padding: 4px 12px 2px; color: #e6e7f2; }
+.h-root { border: 1.5px solid #7c7ff0; border-radius: 9px; padding: 5px 14px; font-weight: 700; font-size: .85rem; position: relative; }
+.h-row { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; width: 100%; max-width: 460px; margin-top: 18px; position: relative; }
+.h-row::before { content: ""; position: absolute; top: -18px; left: 50%; width: 1.5px; height: 9px; background: #5d5f8a; }
+.h-row::after { content: ""; position: absolute; top: -9px; left: 25%; right: 25%; height: 9px; border: 1.5px solid #5d5f8a; border-bottom: 0; border-radius: 4px 4px 0 0; }
+.h-team { border: 1px solid #34365a; border-radius: 10px; padding: 8px 10px; display: grid; gap: 1px; justify-items: center; text-align: center; font-size: .82rem; background: #15162a; }
+.h-team b { font-size: .9rem; }
+.h-team span:last-child { color: #9295ad; font-size: .74rem; }
+.h-team.ir { border-color: rgba(255,106,168,.45); }
+.h-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.h-dot.vc { background: #f4f4fa; }
+.h-dot.irc { background: #ff6aa8; }
+.h-dot.sh { border: 2px solid #8b8ef0; margin-right: 6px; vertical-align: -1px; }
+.h-shared { margin-top: 8px; font-size: .76rem; color: #b1b4c9; }
+
+.phase-row.three { grid-template-columns: minmax(0,1fr) 24px minmax(0,1fr) 24px minmax(0,1fr); }
+.phase-row.three .phase:last-child { background: var(--surface); border-color: var(--line); border-top: 3px solid var(--orange); }
+.phase-row.three .phase:nth-child(3) { background: var(--tint-2); border-color: var(--purple); }
+@media (max-width: 820px) { .phase-row.three { grid-template-columns: minmax(0,1fr); } .phase-row.three .parr { transform: rotate(90deg); } }
+
+/* combined ranking tiles: agent left, outcome right */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .84rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.lg { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.lg.inv { background: var(--purple); }
+.lg.ir { background: var(--pink); }
+.lg.nw { border: 1.5px dashed var(--purple); }
+.rank-opt { grid-template-columns: 38px minmax(150px, .8fr) minmax(0, 1.6fr) auto !important; }
+.ag { display: grid; gap: 2px; align-content: center; align-self: stretch; padding: 4px 12px 4px 0; border-right: 1px solid var(--line); min-width: 0; }
+.ag-team { font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--purple); }
+.ag b { font-size: .86rem; color: var(--ink); font-weight: 600; line-height: 1.3; }
+.ag-new { justify-self: start; font-size: .74rem; font-weight: 600; color: var(--purple); border: 1.5px dashed var(--purple); border-radius: 100px; padding: 1px 8px; margin-top: 2px; }
+.rank-opt.team-ir { border-left: 4px solid var(--pink); }
+.rank-opt.team-inv { border-left: 4px solid var(--purple); }
+.rank-opt.team-ir .ag-team { color: var(--pink); }
+.rank-opt.team-ir .ag-new { color: var(--pink); border-color: var(--pink); }
+.rank-opt.team-ir.ranked .rb { background: var(--pink); }
+.rank-opt.team-ir.ranked { border-color: var(--pink); }
+@media (max-width: 600px) {
+  .rank-opt { grid-template-columns: 34px minmax(0,1fr) !important; }
+  .ag { grid-column: 2; border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 6px; }
+  .rank-opt .rt { grid-column: 2; }
+  .rank-opt .mv { grid-column: 2; }
+}
+
+.eta { display: inline-flex; align-items: center; gap: 10px; justify-self: start; background: var(--surface); border: 1px solid var(--line); border-radius: 100px; padding: 7px 16px 7px 10px; font-size: .92rem; color: var(--muted); }
+.eta b { color: var(--ink); }
+.eta-ico { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--tint); font-size: .95rem; }
+
+.sprint { display: inline-flex; align-items: center; gap: 10px; justify-self: start; font-weight: 700; font-size: .95rem; color: var(--ink); letter-spacing: -.01em; }
+.sprint-tag { background: var(--grad); color: #fff; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; }
+
+.missing-box { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+.opt.mteam-ir[aria-checked="true"] { border-color: var(--pink); }
+
+.firm-locked { font-weight: 700; font-size: 1.1rem; color: var(--ink); background: var(--tint-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+</style>
+</head><body>
+
+
+<div class="gradbar"></div>
+<div class="wrap">
+
+<div class="letterhead">
+  <svg class="mark" viewBox="0 0 320 320" role="img" aria-label="Lua"><defs><linearGradient id="g0c" x1="144.3" y1="35.4" x2="231.7" y2="56.9" gradientUnits="userSpaceOnUse"><stop stop-color="#FFCB85"/><stop offset="1" stop-color="#FFF1DD"/></linearGradient><linearGradient id="g1c" x1="84.1" y1="60.0" x2="170.5" y2="34.8" gradientUnits="userSpaceOnUse"><stop stop-color="#FFA433"/><stop offset="1" stop-color="#FFCB85"/></linearGradient><linearGradient id="g2c" x1="44.2" y1="111.3" x2="106.5" y2="46.4" gradientUnits="userSpaceOnUse"><stop stop-color="#FF6811"/><stop offset="1" stop-color="#FFA433"/></linearGradient><linearGradient id="g3c" x1="35.4" y1="175.7" x2="56.9" y2="88.3" gradientUnits="userSpaceOnUse"><stop stop-color="#FF0A3E"/><stop offset="1" stop-color="#FF6811"/></linearGradient><linearGradient id="g4c" x1="60.0" y1="235.9" x2="34.8" y2="149.5" gradientUnits="userSpaceOnUse"><stop stop-color="#F9227F"/><stop offset="1" stop-color="#FF0A3E"/></linearGradient><linearGradient id="g5c" x1="111.3" y1="275.8" x2="46.4" y2="213.5" gradientUnits="userSpaceOnUse"><stop stop-color="#D742BF"/><stop offset="1" stop-color="#F9227F"/></linearGradient><linearGradient id="g6c" x1="175.7" y1="284.6" x2="88.3" y2="263.1" gradientUnits="userSpaceOnUse"><stop stop-color="#9561F8"/><stop offset="1" stop-color="#D742BF"/></linearGradient><linearGradient id="g7c" x1="235.9" y1="260.0" x2="149.5" y2="285.2" gradientUnits="userSpaceOnUse"><stop stop-color="#2A87FD"/><stop offset="1" stop-color="#9561F8"/></linearGradient><linearGradient id="g8c" x1="275.8" y1="208.7" x2="213.5" y2="273.6" gradientUnits="userSpaceOnUse"><stop stop-color="#36ADFF"/><stop offset="1" stop-color="#2A87FD"/></linearGradient><linearGradient id="g9c" x1="284.6" y1="144.3" x2="263.1" y2="231.7" gradientUnits="userSpaceOnUse"><stop stop-color="#90D1FF"/><stop offset="1" stop-color="#36ADFF"/></linearGradient><linearGradient id="g10c" x1="260.0" y1="84.1" x2="285.2" y2="170.5" gradientUnits="userSpaceOnUse"><stop stop-color="#D4EBF9"/><stop offset="1" stop-color="#90D1FF"/></linearGradient><linearGradient id="g11c" x1="208.7" y1="44.2" x2="273.6" y2="106.5" gradientUnits="userSpaceOnUse"><stop stop-color="#FFF1DD"/><stop offset="1" stop-color="#D4EBF9"/></linearGradient></defs>
+<path d="M191.988 46.1268C191.988 26.1447 178.296 9.36016 159.781 4.64416C166.069 1.57861 172.975 -0.00988396 179.971 4.62724e-05C205.446 4.62724e-05 226.098 20.6519 226.098 46.1268C226.098 71.6017 205.446 92.2535 179.971 92.2535C172.975 92.2635 166.069 90.6751 159.781 87.6095C178.294 82.8935 191.988 66.1089 191.988 46.1268Z" fill="url(#g0c)"/>
+<path d="M130.766 45.3889C120.77 28.084 100.524 20.3956 82.1322 25.5673C86.0453 19.7683 91.2315 14.9399 97.2951 11.4507C119.357 -1.28032 147.568 6.2716 160.306 28.3349C173.044 50.3983 165.483 78.6076 143.422 91.3441C137.368 94.8508 130.594 96.9283 123.615 97.418C137.291 84.0763 140.758 62.6938 130.766 45.3889Z" fill="url(#g1c)"/>
+<path d="M77.3768 75.3658C60.07 65.3729 38.6893 68.8397 25.3458 82.5173C25.8352 75.5379 27.9127 68.7627 31.4197 62.7086C44.1507 40.6471 72.3674 33.0879 94.4289 45.8262C116.49 58.5646 124.05 86.7738 111.313 108.835C107.823 114.899 102.994 120.085 97.1947 123.998C102.37 105.603 94.6817 85.3532 77.3768 75.3658Z" fill="url(#g2c)"/>
+<path d="M46.1268 128.013C26.1429 128.013 9.36009 141.705 4.64409 160.221C1.57854 153.932 -0.00988397 147.026 4.62746e-05 140.03C4.62746e-05 114.555 20.6519 93.9034 46.1268 93.9034C71.6017 93.9034 92.2536 114.555 92.2536 140.03C92.2626 147.026 90.6743 153.932 87.6096 160.221C82.8936 141.705 66.109 128.013 46.1268 128.013Z" fill="url(#g3c)"/>
+<path d="M45.389 189.234C28.0822 199.225 20.3975 219.477 25.5637 237.869C19.7647 233.955 14.9363 228.769 11.4471 222.706C-1.28761 200.646 6.27165 172.433 28.3313 159.695C50.391 146.956 78.604 154.516 91.3405 176.579C94.8473 182.632 96.9248 189.407 97.4145 196.386C84.0765 182.71 62.6939 179.243 45.389 189.234Z" fill="url(#g4c)"/>
+<path d="M75.3607 242.623C65.3696 259.93 68.8365 281.31 82.5122 294.654C75.5335 294.164 68.7589 292.087 62.7054 288.58C40.6438 275.849 33.0846 247.632 45.8211 225.571C58.5576 203.509 86.7706 195.95 108.832 208.687C114.896 212.176 120.082 217.004 123.995 222.803C105.603 217.63 85.3536 225.318 75.3607 242.623Z" fill="url(#g5c)"/>
+<path d="M128.011 273.873C128.011 293.857 141.705 310.64 160.22 315.356C153.932 318.421 147.026 320.009 140.03 320C114.555 320 93.903 299.348 93.903 273.873C93.903 248.398 114.555 227.747 140.03 227.747C147.026 227.738 153.931 229.326 160.22 232.391C141.705 237.107 128.011 253.891 128.011 273.873Z" fill="url(#g6c)"/>
+<path d="M189.234 274.611C199.225 291.916 219.476 299.604 237.868 294.433C233.955 300.231 228.768 305.059 222.705 308.549C200.642 321.28 172.433 313.728 159.694 291.665C146.956 269.602 154.515 241.392 176.579 228.656C182.632 225.149 189.407 223.072 196.385 222.582C182.71 235.924 179.243 257.306 189.234 274.611Z" fill="url(#g7c)"/>
+<path d="M242.624 244.64C259.929 254.631 281.311 251.164 294.655 237.486C294.164 244.464 292.086 251.237 288.579 257.29C275.848 279.351 247.631 286.91 225.57 274.174C203.508 261.437 195.947 233.23 208.686 211.163C212.175 205.099 217.003 199.913 222.802 196C217.636 214.397 225.319 234.647 242.624 244.64Z" fill="url(#g8c)"/>
+<path d="M273.873 191.987C293.855 191.987 310.64 178.295 315.356 159.779C318.421 166.068 320.01 172.974 320 179.97C320 205.445 299.348 226.097 273.873 226.097C248.398 226.097 227.746 205.445 227.746 179.97C227.738 172.974 229.328 166.068 232.396 159.779C237.106 178.295 253.891 191.987 273.873 191.987Z" fill="url(#g9c)"/>
+<path d="M274.611 130.766C291.916 120.775 299.605 100.523 294.431 82.1315C300.23 86.0448 305.059 91.231 308.55 97.2943C321.281 119.358 313.729 147.567 291.665 160.305C269.602 173.044 241.393 165.484 228.656 143.421C225.149 137.368 223.072 130.593 222.582 123.614C235.924 137.29 257.305 140.757 274.611 130.766Z" fill="url(#g10c)"/>
+<path d="M244.638 77.3767C254.631 60.0718 251.164 38.6893 237.487 25.3457C244.469 25.8344 251.248 27.9126 257.305 31.4216C279.366 44.1526 286.925 72.3692 274.187 94.4307C261.449 116.492 233.239 124.053 211.178 111.315C205.114 107.825 199.927 102.997 196.013 97.1983C214.397 102.37 234.647 94.6816 244.638 77.3767Z" fill="url(#g11c)"/></svg>
+  <span class="word">Lua<span class="inv">INVEST</span></span>
+  <span class="doctype">November Design Partnership Sprint</span>
+</div>
+
+<div class="intro">
+  <div class="sprint"><span class="sprint-tag">November 2026</span><span>Design Partnership Sprint</span></div>
+  <h1>Your team's <span class="g">top priorities</span></h1>
+  <p class="lede">Tell us which jobs you most want the Lua Invest agents to take off your plate. We combine everyone's answers from your firm, and together we agree the top 1–3 priorities for the November Design Partnership Sprint, each with a result we can measure.</p>
+  <div class="eta"><span class="eta-ico" aria-hidden="true">⏱</span><span><b>About 15 minutes</b> · 4 short slides, then 5 quick steps. Your answers save as you go on this device.</span></div>
+</div>
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" id="tab-rank" aria-selected="true" data-view="rank">Your ranking</button>
+  <button class="tab" role="tab" id="tab-how" aria-selected="false" data-view="how">The agent teams</button>
+  <button class="tab" role="tab" id="tab-results" aria-selected="false" data-view="results" hidden></button>
+</div>
+
+<!-- ================= RANK ================= -->
+<section id="view-rank" class="card" aria-live="polite"></section>
+
+<!-- ================= INTRO SLIDES ================= -->
+<template id="slide-0">
+  <div class="slide">
+    <span class="kicker">1 of 4 · What Lua Invest is</span>
+    <h2 class="big">The agent team and workspace for <span class="g">AI-native venture capital</span>.</h2>
+    <p class="lede">You're helping us build it. Not another AI tool: a team of specialized agents that share one memory, call on each other and work as one unit, in one workspace with your partners. Each team is mapped to your thesis, your IC process and your tools.</p>
+    <div class="pcards">
+      <div class="pcard"><span class="pn">01 · Your thesis</span><b>Built on your fund</b><span>Your thesis, IC memo template, past deals and pass reasons. The agents start from what your fund already knows.</span></div>
+      <div class="pcard"><span class="pn">02 · Your tools</span><b>Where your deals live</b><span>Deal inbox, calendar, CRM and data rooms. We connect what you already use.</span></div>
+      <div class="pcard"><span class="pn">03 · One team, one workspace</span><b>Agents that work as one</b><span>What one agent learns, the others can use. They hand work to each other, and your partners work alongside them.</span></div>
+    </div>
+    <div class="trust">
+      <div class="trust-block">
+        <span class="pn">Backed by</span>
+        <div class="backers"><span>Norrsken22</span><span>Flourish Ventures</span><span>20VC</span><span>P1 Ventures</span><span>Enza Capital</span><span>Phosphor Capital</span><span>Y Combinator</span></div>
+      </div>
+      <div class="trust-block own">
+        <span class="pn">Your data, your memory</span>
+        <ul>
+          <li><b>You own the memory and the data.</b> Every deck, memo and LP answer builds a memory that belongs to your fund.</li>
+          <li>Your own isolated tenant, encrypted at rest and in transit. Never used to train a model.</li>
+          <li>Nothing goes to a founder, LP or co-investor without your approval, and every action is logged.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="slide-1">
+  <div class="slide">
+    <span class="kicker">2 of 4 · Building an AI-native VC fund</span>
+    <h2 class="big">A team of agents that <span class="g">work as one</span>.</h2>
+    <div class="vision">
+      <div class="net-panel"><svg class="net" viewBox="0 0 700 460" role="img" aria-label="The Investment and Investor Relations agents, all connected to one shared memory"></svg>
+        <div class="net-cap">Every agent shares one memory and can call on any other.</div>
+        <div class="hier">
+          <div class="h-root">Your fund</div>
+          <div class="h-row">
+            <div class="h-team"><span class="h-dot vc"></span><b>Investment team</b><span>VC Agent Team · 9 agents</span></div>
+            <div class="h-team ir"><span class="h-dot irc"></span><b>Investor Relations</b><span>IR Agent Team · 3 agents</span></div>
+          </div>
+          <div class="h-shared"><span class="h-dot sh"></span>Shared by both: Meeting Prep · Personal Assistant</div>
+        </div></div>
+      <div class="outcomes">
+        <span class="pn">What changes</span>
+        <div class="orow"><span class="oa">Inbound decks</span><b>Every deck read against your thesis by morning</b><span class="ot">Today: Read when someone gets to them</span></div>
+        <div class="orow"><span class="oa">Founder calls</span><b>Briefed on every past touch before the call</b><span class="ot">Today: Prepped in the five minutes before</span></div>
+        <div class="orow"><span class="oa">Diligence</span><b>Research and returns model drafted, every number sourced</b><span class="ot">Today: An associate's week in spreadsheets</span></div>
+        <div class="orow"><span class="oa">Investment committee</span><b>The memo in your template, bear case already argued</b><span class="ot">Today: A weekend writing the memo</span></div>
+        <div class="orow"><span class="oa">Portfolio</span><b>Drift from the IC case flagged weeks earlier</b><span class="ot">Today: You hear about it at the board meeting</span></div>
+        <div class="orow"><span class="oa">LPs</span><b>Quarterly letter and DDQ answers drafted for sign-off</b><span class="ot">Today: A partner's fortnight every quarter</span></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="slide-2">
+  <div class="slide">
+    <span class="kicker">3 of 4 · How we get there together</span>
+    <h2 class="big">Solid agents first. <span class="g">Then one team.</span></h2>
+    <div class="phase-row big-phases">
+      <div class="phase"><span class="pn">First · most of the design partnership</span><b>Make every agent solid</b><span>We focus on your fund's top 1–3 priorities, agent by agent, until each agent behind them is reliable on your live work.</span></div>
+      <span class="parr" aria-hidden="true">→</span>
+      <div class="phase"><span class="pn">Then · towards the end</span><b>Bring the team together</b><span>We connect the agents so they hand work to each other and act proactively, as one unit.</span></div>
+    </div>
+  </div>
+</template>
+
+<template id="slide-3">
+  <div class="slide">
+    <span class="kicker">4 of 4 · How the ranking works</span>
+    <h2 class="big">Together we agree your <span class="g">top 1–3 priorities</span>.</h2>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><span class="w">Before kick-off</span><b>Everyone ranks</b><span>Each person ranks their top 3 outcomes across both teams. About 15 minutes.</span></div>
+      <div class="step"><span class="n">2</span><span class="w">Before kick-off</span><b>We score</b><span>Lua adds up your firm's votes and proposes a shortlist of priorities.</span></div>
+      <div class="step dl"><span class="n">3</span><span class="w">Kick-off</span><b>Commit</b><span>Both firms agree the top 1–3 priorities and how we'll measure them.</span></div>
+      <div class="step"><span class="n">4</span><span class="w">Regularly</span><b>Make each agent solid</b><span>Regular working sessions on the agents behind your top 1–3 priorities, on your live work.</span></div>
+      <div class="step"><span class="n">5</span><span class="w">Towards the end</span><b>One team, then review</b><span>Bring the agents together as one proactive unit, with every source connected and governed. Then measure each outcome against where you started.</span></div>
+    </div>
+    <div class="two">
+      <div class="panel"><h3>Scoring</h3>
+        <div class="formula">3 points for a #1 outcome, 2 for #2, 1 for #3<br>points added up across everyone at your firm</div>
+        <p class="muted">The outcomes with the most points make the shortlist. If there's a tie, your firm's lead for the sprint decides.</p></div>
+      <div class="panel"><h3>How we choose</h3>
+        <ul><li>The highest totals make the shortlist, and both firms agree the final 1–3.</li><li>We start with the agents you already have. A new agent is only considered if a priority isn't covered by any of them.</li><li>At least one should be something several people do every day.</li><li>Focus beats coverage. Three in one area is fine.</li></ul></div>
+    </div>
+    <div class="tpl">Each priority leaves kick-off as one sentence:<br>By <em>[date]</em>, <em>[result]</em>, measured by <em>[metric]</em>, from <em>[today]</em> to <em>[target]</em>.</div>
+  </div>
+</template>
+
+<!-- ================= AGENT TEAMS ================= -->
+<section id="view-how" class="section" hidden>
+  <div class="section">
+    <h2>The agents behind each outcome</h2>
+    <p class="muted">Every agent runs on one shared memory, so what one agent learns about a company, LP or partner, the others already know.</p>
+    <div class="agentmap">
+      <div class="panel"><h3>VC Agent Team</h3>
+        <div class="stage"><span class="sn">Find</span><span>Deal Sourcing · Market Monitoring</span></div>
+        <div class="stage"><span class="sn">Screen</span><span>Deal Screener</span></div>
+        <div class="stage"><span class="sn">Diligence</span><span>Research Analyst · Financial Analyst</span></div>
+        <div class="stage"><span class="sn">Decide</span><span>IC Memo · Contrarian Agent</span></div>
+        <div class="stage"><span class="sn">Execute</span><span>Deal Execution</span></div>
+        <div class="stage"><span class="sn">Portfolio</span><span>Portfolio Monitoring · Talent Scouting</span></div>
+      </div>
+      <div class="panel"><h3>IR Agent Team</h3>
+        <div class="stage"><span class="sn">Raise</span><span>Pipeline Management</span></div>
+        <div class="stage"><span class="sn">LP diligence</span><span>Due Diligence Agent</span></div>
+        <div class="stage"><span class="sn">Report</span><span>LP Reporting Agent</span></div>
+        <h3 style="margin-top:10px">Across both teams</h3>
+        <div class="stage"><span class="sn">Every day</span><span>Meeting Prep · Personal Assistant</span></div>
+        <div class="stage"><span class="sn">Potential</span><span><span class="chip idea">New agents, only where a priority isn't already covered by an existing agent</span></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout"><b>Your name is optional.</b> Answers go straight to Lua Invest. Only we see individual answers, and we share results with your firm as totals. Leave your name blank if you'd rather stay anonymous.</div>
+</section>
+
+<!-- ================= RESULTS ================= -->
+<section id="view-results" class="section" hidden></section>
+
+<footer>
+  <span>Lua Invest · heylua.ai/invest</span>
+  <span>Questions? Ask your Lua Invest contact.</span>
+</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+<script>
+(function () {
+  const TEAMS = [
+    { id: "inv", name: "Investment team", sub: "VC Agent Team", d: "Finding, screening, investing in and supporting companies.",
+      agents: [["Deal Sourcing", "Finds companies that fit your thesis"], ["Market Monitoring", "Watches your sectors"], ["Deal Screener", "Reads every inbound deck"], ["Research Analyst", "Company and market research"], ["Financial Analyst", "Cap tables, returns, exit cases"], ["IC Memo", "Drafts the memo in your template"], ["Contrarian Agent", "Argues the bear case"], ["Deal Execution", "Term sheet to funds out"], ["Portfolio Monitoring", "Tracks each holding"], ["Talent Scouting", "Finds hires for portcos"], ["Meeting Prep", "A brief before every meeting"]],
+      potential: [["Portfolio pulse", "Daily list of founders to call"], ["Portco agent team", "An agent team for each founder"]] },
+    { id: "ir", name: "Investor Relations", sub: "IR Agent Team", d: "Raising the fund, LP diligence and reporting.",
+      agents: [["Pipeline Management", "Runs the raise, flags quiet LPs"], ["Due Diligence Agent", "Answers DDQs from your vault"], ["LP Reporting Agent", "Drafts and sends LP updates"], ["Meeting Prep", "A brief before every LP meeting"], ["Personal Assistant", "Inbox, calendar, follow-ups"]],
+      potential: [["SPVs and co-investing", "Investor lists, documents, deadlines"]] }
+  ];
+  const ITEMS = [
+    { id: "inv-scr", agentList: ["Deal Screener"], team: "inv", t: "Every inbound deck checked for mandate fit, instantly", d: "Founders get a fast answer and you only spend time on what fits. Put it on your website as a founder-facing screener to grow the top of your funnel.", agents: "Deal Screener", today: "Strong" },
+    { id: "res-src", agentList: ["Deal Sourcing", "Market Monitoring", "Talent Scouting"], team: "inv", t: "Find the best companies before other funds do", d: "New companies and market signals matched to your thesis, plus talent tracking that catches key signals, like a senior operator leaving to start something.", agents: "Deal Sourcing, Market Monitoring, Talent Scouting", today: "Medium" },
+    { id: "inv-dd", agentList: ["Research Analyst", "Financial Analyst", "IC Memo", "Contrarian Agent"], team: "inv", t: "Thorough investment diligence, in a fraction of the time", d: "Research, returns models and an IC-ready memo in your template, with every figure sourced and the bear case already argued.", agents: "Research Analyst, Financial Analyst, IC Memo, Contrarian", today: "Strong" },
+    { id: "inv-close", agentList: ["Deal Execution"], team: "inv", t: "Close deals faster, with nothing missed", d: "DD checklists, documents and sign-offs tracked from term sheet to funds out.", agents: "Deal Execution", today: "To confirm" },
+    { id: "val-pulse", agentList: ["Portfolio Monitoring"], newAgent: "Portfolio pulse", team: "inv", t: "Know which portfolio companies need you, every morning", d: "A daily ranked list of founders to call and why: runway, missed targets, key hires and new risks. Every holding is tracked against your IC case, so you spot drift weeks before the board meeting.", agents: "Portfolio Monitoring + new pulse agent", today: "Potential new agent" },
+    { id: "val-create", agentList: ["Portfolio Monitoring"], newAgent: "Value creation", team: "inv", t: "Lift every portfolio company with proven playbooks", d: "Roll out best practices across your portfolio, from hiring and pricing to reporting and governance, and track which companies adopt them and what changes as a result.", agents: "Portfolio Monitoring + new value creation agent", today: "Potential new agent" },
+    { id: "cap-ddq", agentList: ["Due Diligence Agent"], team: "ir", t: "Answer any LP question in minutes", d: "Sourced answers to DDQs and LP questions, drafted from your own documents.", agents: "Due Diligence", today: "Strong" },
+    { id: "cap-lpu", agentList: ["LP Reporting Agent"], team: "ir", t: "LP updates that write themselves", d: "Each quarterly update drafted from portfolio data, ready for your sign-off and sent before LPs ask.", agents: "LP Reporting, Portfolio Monitoring", today: "Strong" },
+    { id: "cap-pipe", agentList: ["Pipeline Management"], team: "ir", t: "Close your fund faster, with no LP going quiet", d: "Every LP tracked from first email to signed subscription, with follow-ups drafted for you.", agents: "Pipeline Management", today: "Medium" },
+    { id: "ir-raise", agentList: ["Portfolio Monitoring", "Pipeline Management"], newAgent: "Fundraise outlook", team: "ir", t: "A live view of your next raise", d: "When to raise and a realistic range for your next fund, updated as your portfolio performs, so you go to LPs with the strongest story at the right time.", agents: "Portfolio Monitoring, Pipeline Management + new fundraise outlook agent", today: "Potential new agent" },
+    { id: "cap-spv", agentList: [], newAgent: "SPV and co-invest agent", team: "ir", t: "Set up SPVs and co-investments in days", d: "Investor lists, documents and deadlines handled for each SPV or co-invest.", agents: "None yet", today: "Potential new agent" }
+  ];
+  const PICKS = 3;
+  const ROLES = ["Partner", "Investment team", "Investor relations", "Operations and finance", "Something else"];
+  const HOURS = [["0", "None", 0], ["lt1", "Under 1 hour", 0.5], ["1-3", "1 to 3 hours", 2], ["3-5", "3 to 5 hours", 4], ["5-10", "5 to 10 hours", 7.5], ["10+", "More than 10", 12]];
+  const WHO = [["me", "Me"], ["team", "Someone else at my firm"], ["outside", "An outside provider"], ["nobody", "No one, it doesn't get done"]];
+  const USAGE = ["Every day", "A few times a week", "Once a week", "Less often"];
+  const TOOLCATS = [
+    { id: "crm", name: "CRM", help: "Where you track deals, founders and relationships.", opts: ["Affinity", "Attio", "Salesforce", "HubSpot", "DealCloud", "4Degrees", "Airtable"] },
+    { id: "inv", name: "Investor-specific tools", help: "Market data, sourcing and portfolio reporting.", opts: ["Harmonic", "PitchBook", "Crunchbase", "Dealroom", "CB Insights", "Carta", "Standard Metrics", "Visible"] },
+    { id: "comms", name: "Communication tools", help: "Email, chat and meetings.", opts: ["Slack", "Microsoft Teams", "Gmail", "Outlook", "Zoom", "Google Meet", "WhatsApp", "Granola"] },
+    { id: "data", name: "Data management", help: "Documents, files, notes and data rooms.", opts: ["Google Workspace", "Microsoft 365", "Notion", "Dropbox", "Box", "DocSend", "Datasite"] },
+    { id: "other", name: "Others", help: "Meeting notes, AI assistants, signing and automation.", opts: ["ChatGPT", "Claude", "Microsoft Copilot", "Fireflies", "DocuSign", "Calendly", "Zapier"] }
+  ];
+  const STEPS = ["About you", "Rank outcomes", "Tell us more", "Your tools", "Check and send"];
+  const DRAFT = "dp-survey-draft-" + (new URLSearchParams(location.search).get("firm") || "");
+  const byId = Object.fromEntries(ITEMS.map(i => [i.id, i]));
+  const teamOf = id => TEAMS.find(t => t.id === id);
+
+  let state = { firm: "", name: "", role: "", teams: ["all"], open: "", ranks: { all: [] }, missing: { all: "" }, missingTeam: "", details: {}, usage: "", notes: "", tools: {}, email: "", emailOk: false };
+  let step = 0, intro = 0, submitted = false, saving = false, errMsg = "";
+  const WEBHOOK = "https://webhook.heylua.ai/baseAgent_agent_1790331214509_pnkrtcw8x/dp-survey";
+  const CODE = (new URLSearchParams(location.search).get("firm") || "").trim();
+  let firmLocked = false, linkOk = null, ready = false;
+  const respondentId = (() => { const k = "dp-respondent-" + CODE; try { let v = localStorage.getItem(k); if (!v) { v = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2)); localStorage.setItem(k, v); } return v; } catch (e) { return String(Date.now()) + Math.random().toString(36).slice(2); } })();
+  async function callHook(payload) {
+    try {
+      const r = await fetch(WEBHOOK, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) });
+      const j = await r.json().catch(() => null);
+      return { readable: true, status: r.status, data: j };
+    } catch (e) {
+      // The answer was blocked from being read (cross-site), but a text/plain POST still reaches Sidekick.
+      await fetch(WEBHOOK, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) });
+      return { readable: false };
+    }
+  }
+
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const firmKey = f => String(f || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "");
+  const canonicalFirm = f => String(f || "").trim();
+  const ranked = () => state.ranks.all.map((id, i) => ({ id, team: byId[id].team, rank: i + 1 }));
+
+  try { const d = JSON.parse(localStorage.getItem(DRAFT) || "null"); if (d && d.state) { state = Object.assign(state, d.state); step = d.step || 0; } } catch (e) {}
+  function saveDraft() { try { localStorage.setItem(DRAFT, JSON.stringify({ state, step })); } catch (e) {} }
+
+  function validate(s) {
+    if (s === 0) { if (!state.role) return "Please choose your role."; }
+    if (s === 1) { if (state.ranks.all.length !== PICKS) return "Drag your top " + PICKS + " outcomes into the box. You have " + state.ranks.all.length + "."; }
+    if (s === 2) { for (const r of ranked()) { const d = state.details[r.id] || {}; if (!d.hours || !d.who) return "Answer both questions for \"" + byId[r.id].t + "\"."; } if (!state.usage) return "Tell us how often you'd use the agents."; }
+    return "";
+  }
+
+  function orgChart() {
+    const firm = canonicalFirm(state.firm) || "Your firm";
+    return `<div class="org">
+      <div class="org-root">${esc(firm)}</div>
+      <div class="org-stem" aria-hidden="true"></div>
+      <div class="org-row">
+        ${TEAMS.map(t => { const on = state.teams.includes(t.id), open = state.open === t.id;
+          return `<div class="org-col">
+          <button class="org-team" aria-pressed="${on}" data-team="${t.id}">
+            <span class="ot-check" aria-hidden="true"></span>
+            <span class="ot-name">${esc(t.name)}</span>
+            <span class="ot-sub">${esc(t.sub)} · ${t.agents.length} agents</span>
+            <span class="ot-d">${esc(t.d)}</span>
+          </button>
+          <button class="org-peek" data-peek="${t.id}" aria-expanded="${open}">${open ? "Hide the agents" : "See the agents"}</button>
+          ${open ? `<div class="tiles">${t.agents.map(a => `<div class="tile"><b>${esc(a[0])}</b><span>${esc(a[1])}</span></div>`).join("")}</div>
+          ${(t.potential || []).length ? `<div class="zone-label">Potential new agents</div><div class="tiles">${t.potential.map(a => `<div class="tile potential"><b>${esc(a[0])}</b><span>${esc(a[1])}</span></div>`).join("")}</div>` : ""}` : ""}
+        </div>`; }).join("")}
+      </div></div>`;
+  }
+
+  function renderRank() {
+    const el = $("#view-rank");
+    if (submitted) {
+      el.innerHTML = `<div class="done"><div class="tick">✓</div><h2>Thank you${state.name.trim() ? ", " + esc(state.name.trim().split(" ")[0]) : ""}. Your ranking is in.</h2>
+        <p class="muted">We'll share ${esc(canonicalFirm(state.firm))}'s combined results at kick-off. You can change your answers until then.</p>
+        <button class="btn ghost" id="edit">Change my answers</button></div>`;
+      $("#edit").onclick = () => { submitted = false; step = 0; renderRank(); };
+      return;
+    }
+    if (!state.emailOk) {
+      el.innerHTML = `<div class="gate">
+        <span class="kicker">Before you start</span>
+        <h2 class="big">Enter your <span class="g">work email</span>.</h2>
+        <p class="lede">We use it only to check you're at one of our design partner firms. We keep your email's domain, not your address, so your answers stay anonymous unless you add your name.</p>
+        ${!CODE ? `<div class="note">This page needs your firm's survey link. Open the link your Lua Invest contact sent you.</div>` : `
+        <form id="gate-form" class="gate-row" novalidate><label class="sr" for="f-email">Work email</label>
+          <input class="text" id="f-email" type="email" autocomplete="email" inputmode="email" value="${esc(state.email)}" placeholder="you@yourfirm.com">
+          <button class="btn primary" id="gate-go" type="submit" ${saving ? "disabled" : ""}>${saving ? "Checking…" : "Continue"}</button></form>`}
+        ${errMsg ? `<p class="err" role="alert">${esc(errMsg)}</p>` : ""}
+      </div>`;
+      const gf = $("#gate-form");
+      if (gf) gf.onsubmit = async (e) => {
+        e.preventDefault();
+        const em = ($("#f-email").value || "").trim();
+        state.email = em;
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { errMsg = "Enter a valid work email."; renderRank(); return; }
+        saving = true; errMsg = ""; renderRank();
+        try {
+          const res = await callHook({ action: "lookup", code: CODE, email: em });
+          if (res.readable && !(res.data && res.data.ok)) { errMsg = (res.data && res.data.error) || "We couldn't check that email. Try again."; }
+          else { if (res.readable && res.data.firm) { state.firm = res.data.firm; firmLocked = true; } state.emailOk = true; saveDraft(); }
+        } catch (err) { errMsg = "We couldn't reach Lua Invest. Check your connection and try again."; }
+        saving = false; renderRank();
+      };
+      return;
+    }
+    if (!state.introDone) {
+      const n = 4, lastSlide = intro === n - 1;
+      el.innerHTML = `<div class="progress"><div class="lbl"><span>Before you start · ${intro + 1} of ${n}</span><span class="sdots">${Array.from({ length: n }, (_, i) => `<i class="${i === intro ? "on" : ""}"></i>`).join("")}</span></div><div class="track"><div class="fill" style="width:${Math.round((intro + 1) / n * 100)}%"></div></div></div>
+        ${document.getElementById("slide-" + intro).innerHTML}
+        <div class="nav"><div>${intro > 0 ? `<button class="btn ghost" id="sback">Back</button>` : ""}</div>
+        <button class="btn primary" id="snext">${lastSlide ? "Start my ranking" : "Next"}</button></div>`;
+      drawNet(el.querySelector(".net"));
+      const sb = $("#sback"); if (sb) sb.onclick = () => { intro--; renderRank(); el.scrollIntoView({ block: "start", behavior: "smooth" }); };
+      $("#snext").onclick = () => { if (lastSlide) { state.introDone = true; step = 0; saveDraft(); } else intro++; renderRank(); el.scrollIntoView({ block: "start", behavior: "smooth" }); };
+      return;
+    }
+    const pct = Math.round((step + 1) / STEPS.length * 100);
+    let body = "";
+    if (step === 0) {
+      body = `${state.firm ? `<div class="q"><span class="qt">Your firm</span><div class="firm-locked">${esc(state.firm)}</div></div>` : ""}
+      <div class="q"><span class="qt" id="role-q">1. What best describes your role?</span><div class="opts" role="radiogroup" aria-labelledby="role-q">${ROLES.map(r => `<button class="opt" role="radio" aria-checked="${state.role === r}" data-role="${esc(r)}">${esc(r)}</button>`).join("")}</div></div>
+      <div class="q"><label for="f-name">Your name <span class="muted" style="font-weight:400">(optional)</span></label><p class="help">Leave this blank to stay anonymous.</p><input class="text" id="f-name" autocomplete="name" value="${esc(state.name)}" placeholder="First and last name"></div>
+      <div class="note anon"><span>🔒</span><span><b>Only Lua Invest sees your answers.</b> We share results with your firm as totals, never person by person. It takes about 15 minutes, and there are no wrong answers.</span></div>`;
+    } else if (step === 1) {
+      const r = state.ranks.all, full = r.length >= PICKS;
+      const pool = ITEMS.filter(i => !r.includes(i.id));
+      const agentCol = i => `<span class="ag"><span class="ag-team">${i.team === "ir" ? "Investor Relations" : "Investment team"}</span>${i.agentList.map(a => `<b>${esc(a)}</b>`).join("")}${i.newAgent ? `<span class="ag-new">New agent: ${esc(i.newAgent)}</span>` : ""}</span>`;
+      const outCol = i => `<span class="rt"><b>${esc(i.t)}</b><span>${esc(i.d)}</span></span>`;
+      body = `<div class="q"><span class="qt">3. Rank the outcomes you want most.</span><p class="help">Each tile shows the agent on the left and the outcome it delivers on the right. Drag your top ${PICKS} into the box, with your #1 at the top. You can also tap a tile to add it, and use the arrows to reorder.</p></div>
+      <div class="legend"><span><i class="lg inv"></i>Investment team</span><span><i class="lg ir"></i>Investor Relations</span><span><i class="lg nw"></i>Needs a new agent</span></div>
+      <div class="rank-team"><div class="rt-head"><h3>Your top ${PICKS}</h3><span class="dots">${Array.from({ length: PICKS }, (_, i) => `<i class="${i < r.length ? "on" : ""}"></i>`).join("")}</span><span class="muted" style="font-size:.88rem">${r.length} of ${PICKS} ranked</span></div>
+        <ol class="top-zone ${full ? "full" : ""}" data-zone="top" data-team="all" style="--slots:${PICKS}">${r.map((id, k) => { const i = byId[id];
+          return `<li class="rank-opt ranked team-${i.team}${i.newAgent ? " is-new" : ""}" data-id="${id}"><span class="rb">#${k + 1}</span>${agentCol(i)}${outCol(i)}
+          <span class="mv"><button data-move="all|${k}|-1" aria-label="Move up" ${k === 0 ? "disabled" : ""}>↑</button><button data-move="all|${k}|1" aria-label="Move down" ${k === r.length - 1 ? "disabled" : ""}>↓</button><button data-remove="all|${id}" aria-label="Remove from top ${PICKS}">✕</button></span></li>`; }).join("")}</ol>
+        ${pool.length ? `<div class="zone-label">${full ? "Other outcomes · remove one above to swap" : "All outcomes · drag up or tap to add"}</div>
+        <ul class="pool" data-zone="pool" data-team="all">${pool.map(i => `<li class="rank-opt team-${i.team}${i.newAgent ? " is-new" : ""}" data-id="${i.id}" tabindex="0" role="button" aria-label="Add: ${esc(i.t)}" data-add="all|${i.id}" ${full ? 'aria-disabled="true"' : ""}><span class="rb grip" aria-hidden="true">⋮⋮</span>${agentCol(i)}${outCol(i)}</li>`).join("")}</ul>` : ""}
+        <div class="missing-box"><span class="sub" id="mt-q">Missing an outcome? <span class="muted" style="font-weight:400">(optional)</span></span>
+        <div class="opts" role="radiogroup" aria-labelledby="mt-q">${[["inv", "Investment team"], ["ir", "Investor Relations"]].map(([k, l]) => `<button class="opt mteam-${k}" role="radio" aria-checked="${state.missingTeam === k}" data-mteam="${k}">${l}</button>`).join("")}</div>
+        <label class="sr" for="m-all">Describe the missing outcome</label><input class="text" id="m-all" data-missing="all" value="${esc(state.missing.all)}" placeholder="e.g. Board packs prepared for us"></div></div>`;
+    } else if (step === 2) {
+      body = `<div class="q"><span class="qt">4. Tell us a little about each one.</span><p class="help">Two quick choices for each outcome, and an optional line on what good looks like.</p></div>
+      ${ranked().map(r => { const d = state.details[r.id] || {}, id = r.id;
+        return `<div class="detail"><div class="head"><span class="rk">${r.rank}</span><div><b style="color:var(--ink)">${esc(byId[id].t)}</b><div class="small">${esc(teamOf(r.team).name)}</div></div></div>
+        <div class="q"><span class="sub" id="h-${id}">How many hours a week does this take you today?</span><div class="opts" role="radiogroup" aria-labelledby="h-${id}">${HOURS.map(h => `<button class="opt" role="radio" aria-checked="${d.hours === h[0]}" data-hours="${id}|${h[0]}">${h[1]}</button>`).join("")}</div></div>
+        <div class="q"><span class="sub" id="w-${id}">Who does it today?</span><div class="opts" role="radiogroup" aria-labelledby="w-${id}">${WHO.map(w => `<button class="opt" role="radio" aria-checked="${d.who === w[0]}" data-who="${id}|${w[0]}">${w[1]}</button>`).join("")}</div></div>
+        <div class="q"><label class="sub" for="g-${id}">If this went really well by the end of the design period, what would be different? <span class="muted" style="font-weight:400">(optional)</span></label><input class="text" id="g-${id}" data-good="${id}" value="${esc(d.good || "")}" placeholder="e.g. Every deck gets a verdict the same day it arrives"></div></div>`; }).join("")}
+      <div class="detail"><div class="q"><span class="sub" id="u-q">5. If the agents delivered your #1 outcome, how often would you use them?</span><div class="opts" role="radiogroup" aria-labelledby="u-q">${USAGE.map(u => `<button class="opt" role="radio" aria-checked="${state.usage === u}" data-usage="${esc(u)}">${u}</button>`).join("")}</div></div>
+      <div class="q"><label class="sub" for="f-notes">6. Anything else we should know? <span class="muted" style="font-weight:400">(optional)</span></label><textarea class="text" id="f-notes" placeholder="Tools you use today, worries, ideas">${esc(state.notes)}</textarea></div></div>`;
+    } else if (step === 3) {
+      body = `<div class="q"><span class="qt">7. Which tools does your team use today?</span><p class="help">Tap everything you use, so we know what to connect. Add anything we've missed. This step is optional.</p></div>
+      ${TOOLCATS.map(c => { const sel = state.tools[c.id] || [], extra = sel.filter(x => !c.opts.includes(x));
+        return `<div class="toolcat"><div class="tc-head"><h3>${esc(c.name)}</h3><span class="muted" style="font-size:.85rem">${esc(c.help)}</span></div>
+        <div class="opts">${c.opts.concat(extra).map(o => `<button class="opt" role="checkbox" aria-checked="${sel.includes(o)}" data-tool="${c.id}" data-name="${esc(o)}">${esc(o)}</button>`).join("")}</div>
+        <div class="addrow"><label class="sr" for="ta-${c.id}">Add another ${esc(c.name)} tool</label><input class="text" id="ta-${c.id}" data-toolinput="${c.id}" placeholder="Add another…"><button class="btn ghost" data-tooladd="${c.id}">Add</button></div></div>`; }).join("")}`;
+    } else if (step === 4) {
+      const lbl = (arr, v) => (arr.find(a => a[0] === v) || [, "–"])[1];
+      body = `<div class="q"><span class="qt">Check your answers</span><p class="help">Go back to change anything. When you're happy, send it.</p></div>
+      <div class="review"><dl><dt>Firm</dt><dd>${esc(canonicalFirm(state.firm))}</dd><dt>Name</dt><dd>${state.name.trim() ? esc(state.name.trim()) : `<span class="muted">Not given (anonymous)</span>`}</dd><dt>Role</dt><dd>${esc(state.role)}</dd>
+      ${[0].map(() => `<dt>Your top ${PICKS}</dt><dd><ol>${state.ranks.all.map(id => { const d = state.details[id] || {}; return `<li><b>${esc(byId[id].t)}</b><br><span class="muted" style="font-size:.88rem">${lbl(HOURS, d.hours)} a week · ${lbl(WHO, d.who)}${d.good ? " · \"" + esc(d.good) + "\"" : ""}</span></li>`; }).join("")}</ol>${state.missing.all.trim() ? `<div class="small">Missing${state.missingTeam ? " (" + (state.missingTeam === "ir" ? "Investor Relations" : "Investment team") + ")" : ""}: ${esc(state.missing.all.trim())}</div>` : ""}</dd>`).join("")}
+      <dt>How often you'd use it</dt><dd>${esc(state.usage)}</dd>
+      <dt>Tools</dt><dd>${TOOLCATS.filter(c => (state.tools[c.id] || []).length).map(c => `<div><span class="muted">${esc(c.name)}:</span> ${state.tools[c.id].map(esc).join(", ")}</div>`).join("") || `<span class="muted">None given</span>`}</dd>${state.notes ? `<dt>Notes</dt><dd>${esc(state.notes)}</dd>` : ""}</dl></div>
+      ${!CODE || linkOk === false ? `<div class="note">This link can't take answers. Open the survey link your Lua Invest contact sent you.</div>` : ""}`;
+    }
+    const last = step === STEPS.length - 1;
+    const sendable = !!CODE && linkOk !== false && !saving;
+    el.innerHTML = `<div class="progress"><div class="lbl"><span>Step ${step + 1} of ${STEPS.length} · ${STEPS[step]}</span><span>${pct}%</span></div><div class="track"><div class="fill" style="width:${pct}%"></div></div></div>
+      ${body}
+      <div class="nav"><div><button class="btn ghost" id="back">Back</button></div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end">${errMsg ? `<span class="err" role="alert">${esc(errMsg)}</span>` : ""}
+      ${last ? `<button class="btn primary" id="send" ${sendable ? "" : "disabled"}>${saving ? "Sending…" : "Send my ranking"}</button>` : `<button class="btn primary" id="next">Next</button>`}</div></div>`;
+    bindRank();
+  }
+
+  function drawNet(svg) {
+    if (!svg) return;
+    const names = ["Deal Sourcing", "Deal Screener", "Research Analyst", "Financial Analyst", "IC Memo", "Contrarian Agent", "LP Reporting", "Due Diligence", "Pipeline Management", "Portfolio Monitoring", "Market Monitoring", "Personal Assistant", "Meeting Prep", "Talent Scouting"];
+    const shared = ["Personal Assistant", "Meeting Prep"], ir = ["LP Reporting", "Due Diligence", "Pipeline Management"];
+    const IRC = "#ff6aa8", cx = 350, cy = 225, r = 160, n = names.length;
+    const pts = names.map((nm, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return { nm, a, x: cx + r * Math.cos(a), y: cy + r * Math.sin(a), ir: ir.includes(nm), sh: shared.includes(nm) }; });
+    let s = `<circle cx="${cx}" cy="${cy}" r="${r + 8}" fill="none" stroke="#5457d6" stroke-opacity=".25"/>`;
+    const irPts = pts.filter(p => p.ir), a0 = irPts[0].a - 0.16, a1 = irPts[irPts.length - 1].a + 0.16, R = r;
+    s += `<path d="M ${cx + R * Math.cos(a0)} ${cy + R * Math.sin(a0)} A ${R} ${R} 0 0 1 ${cx + R * Math.cos(a1)} ${cy + R * Math.sin(a1)}" fill="none" stroke="${IRC}" stroke-opacity=".3" stroke-width="18" stroke-linecap="round"/>`;
+    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const irl = pts[i].ir || pts[j].ir;
+      s += `<line x1="${pts[i].x.toFixed(1)}" y1="${pts[i].y.toFixed(1)}" x2="${pts[j].x.toFixed(1)}" y2="${pts[j].y.toFixed(1)}" stroke="${irl ? IRC : "#8b8ef0"}" stroke-opacity="${irl ? ".16" : ".2"}" stroke-width="1"/>`; }
+    s += `<circle cx="${cx}" cy="${cy}" r="58" fill="#15162a" stroke="#7c7ff0" stroke-width="1.5"/>`;
+    const mark = document.querySelector(".letterhead svg");
+    if (mark) s += `<svg x="${cx - 22}" y="${cy - 36}" width="44" height="44" viewBox="0 0 320 320">${mark.innerHTML}</svg>`;
+    s += `<text x="${cx}" y="${cy + 26}" text-anchor="middle" class="nl c">SHARED MEMORY</text>`;
+    for (const p of pts) {
+      const c = Math.cos(p.a), sn = Math.sin(p.a);
+      const off = p.ir ? 20 : 14, lx = p.x + off * c, ly = p.y + off * sn + 4;
+      const anchor = Math.abs(c) < 0.2 ? "middle" : c > 0 ? "start" : "end";
+      const dy = Math.abs(c) < 0.2 ? (sn < 0 ? -6 : 12) : 0;
+      const fill = p.ir ? IRC : p.sh ? "#15162a" : "#f4f4fa", stroke = p.ir ? IRC : p.sh ? "#8b8ef0" : "#f4f4fa";
+      s += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="7" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+      s += `<text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${anchor}" class="nl${p.sh ? " sh" : p.ir ? " ir" : ""}">${p.nm.toUpperCase()}</text>`;
+    }
+    svg.innerHTML = s;
+  }
+
+  function go(to) { errMsg = ""; step = to; saveDraft(); renderRank(); $("#view-rank").scrollIntoView({ block: "start", behavior: "smooth" }); }
+  function refocus(sel) { const b = document.querySelector(sel); if (b) b.focus(); }
+
+  function bindRank() {
+    const el = $("#view-rank");
+    el.querySelectorAll("[data-role]").forEach(b => b.onclick = () => { state.role = b.dataset.role; errMsg = ""; saveDraft(); renderRank(); });
+    const fm = $("#f-firm"); if (fm) fm.oninput = () => { state.firm = fm.value; saveDraft(); };
+    const nm = $("#f-name"); if (nm) nm.oninput = () => { state.name = nm.value; saveDraft(); };
+    el.querySelectorAll("[data-team]").forEach(b => b.onclick = () => {
+      const t = b.dataset.team, i = state.teams.indexOf(t);
+      if (i >= 0) state.teams.splice(i, 1); else { state.teams.push(t); state.open = t; }
+      state.teams.sort((a, b2) => TEAMS.findIndex(x => x.id === a) - TEAMS.findIndex(x => x.id === b2));
+      errMsg = ""; saveDraft(); renderRank(); refocus(`[data-team="${t}"]`);
+    });
+    el.querySelectorAll("[data-peek]").forEach(b => b.onclick = () => { const t = b.dataset.peek; state.open = state.open === t ? "" : t; saveDraft(); renderRank(); refocus(`[data-peek="${t}"]`); });
+    const addTile = (t, id) => { const r = state.ranks[t]; if (r.length >= PICKS || r.includes(id)) return; r.push(id); errMsg = ""; saveDraft(); renderRank(); refocus(`.top-zone[data-team="${t}"] [data-id="${id}"] [data-remove]`); };
+    el.querySelectorAll("[data-add]").forEach(li => {
+      const [t, id] = li.dataset.add.split("|");
+      li.onclick = () => addTile(t, id);
+      li.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); addTile(t, id); } };
+    });
+    el.querySelectorAll("[data-move]").forEach(b => b.onclick = () => {
+      const [t, k, d] = b.dataset.move.split("|"), r = state.ranks[t], i = +k, j = i + +d;
+      [r[i], r[j]] = [r[j], r[i]]; saveDraft(); renderRank(); refocus(`[data-move="${t}|${j}|${d}"]`);
+    });
+    el.querySelectorAll("[data-remove]").forEach(b => b.onclick = () => {
+      const [t, id] = b.dataset.remove.split("|"); state.ranks[t] = state.ranks[t].filter(x => x !== id); saveDraft(); renderRank();
+    });
+    if (window.Sortable) el.querySelectorAll("[data-zone]").forEach(list => {
+      const t = list.dataset.team;
+      Sortable.create(list, {
+        group: "rank-" + t, animation: 150, forceFallback: true, fallbackOnBody: true, fallbackTolerance: 3, filter: "button", preventOnFilter: false, ghostClass: "drag-ghost", chosenClass: "drag-chosen",
+        onMove: evt => !(evt.to.dataset.zone === "top" && evt.from !== evt.to && evt.to.children.length >= PICKS),
+        onEnd: () => {
+          const top = el.querySelector(`.top-zone[data-team="${t}"]`);
+          state.ranks[t] = [...top.children].map(li => li.dataset.id).filter(Boolean).slice(0, PICKS);
+          errMsg = ""; saveDraft(); setTimeout(renderRank, 0);
+        }
+      });
+    });
+    el.querySelectorAll("[data-mteam]").forEach(b => b.onclick = () => { state.missingTeam = state.missingTeam === b.dataset.mteam ? "" : b.dataset.mteam; saveDraft(); renderRank(); refocus(`[data-mteam="${b.dataset.mteam}"]`); });
+    el.querySelectorAll("[data-missing]").forEach(inp => inp.oninput = () => { state.missing[inp.dataset.missing] = inp.value; saveDraft(); });
+    const setDetail = (id, k, v) => { state.details[id] = Object.assign({}, state.details[id], { [k]: v }); saveDraft(); };
+    el.querySelectorAll("[data-hours]").forEach(b => b.onclick = () => { const [id, v] = b.dataset.hours.split("|"); setDetail(id, "hours", v); errMsg = ""; renderRank(); });
+    el.querySelectorAll("[data-who]").forEach(b => b.onclick = () => { const [id, v] = b.dataset.who.split("|"); setDetail(id, "who", v); errMsg = ""; renderRank(); });
+    el.querySelectorAll("[data-good]").forEach(inp => inp.oninput = () => setDetail(inp.dataset.good, "good", inp.value));
+    el.querySelectorAll("[data-usage]").forEach(b => b.onclick = () => { state.usage = b.dataset.usage; errMsg = ""; saveDraft(); renderRank(); });
+    el.querySelectorAll("[data-tool]").forEach(b => b.onclick = () => {
+      const c = b.dataset.tool, n = b.dataset.name, sel = state.tools[c] = (state.tools[c] || []).slice(), k = sel.indexOf(n);
+      if (k >= 0) sel.splice(k, 1); else sel.push(n);
+      saveDraft(); renderRank(); refocus(`[data-tool="${c}"][data-name="${CSS.escape(n)}"]`);
+    });
+    const addTool = c => { const inp = el.querySelector(`[data-toolinput="${c}"]`), v = (inp.value || "").trim().slice(0, 60); if (!v) return;
+      const sel = state.tools[c] = (state.tools[c] || []).slice(); if (!sel.some(x => x.toLowerCase() === v.toLowerCase())) sel.push(v);
+      saveDraft(); renderRank(); refocus(`[data-toolinput="${c}"]`); };
+    el.querySelectorAll("[data-tooladd]").forEach(b => b.onclick = () => addTool(b.dataset.tooladd));
+    el.querySelectorAll("[data-toolinput]").forEach(inp => inp.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); addTool(inp.dataset.toolinput); } });
+    const nt = $("#f-notes"); if (nt) nt.oninput = () => { state.notes = nt.value; saveDraft(); };
+    const back = $("#back"); if (back) back.onclick = () => { if (step === 0) { state.introDone = false; intro = 3; saveDraft(); renderRank(); } else go(step - 1); };
+    const next = $("#next"); if (next) next.onclick = () => { const e = validate(step); if (e) { errMsg = e; renderRank(); return; } go(step + 1); };
+    const send = $("#send"); if (send) send.onclick = submit;
+  }
+
+  async function submit() {
+    for (const s of [0, 1, 2]) { const e = validate(s); if (e) { errMsg = e; renderRank(); return; } }
+    if (!CODE) return;
+    saving = true; errMsg = ""; renderRank();
+    const picks = ranked().map(r => { const d = state.details[r.id] || {}; return { id: r.id, rank: r.rank, title: byId[r.id].t, hours: d.hours, who: d.who, good: (d.good || "").trim().slice(0, 500) }; });
+    const answer = { name: state.name.trim(), role: state.role, picks,
+      missing: { text: state.missing.all.trim(), team: state.missing.all.trim() ? state.missingTeam : "" },
+      tools: Object.fromEntries(TOOLCATS.map(c => [c.id, (state.tools[c.id] || []).slice()])), usage: state.usage, notes: state.notes.trim() };
+    try {
+      const res = await callHook({ action: "submit", code: CODE, email: state.email, respondentId, answer });
+      if (res.readable && !(res.data && res.data.ok)) { errMsg = (res.data && res.data.error) || "Couldn't send. Try again in a moment."; }
+      else { submitted = true; try { localStorage.setItem("dp-submitted-" + CODE, JSON.stringify(state)); localStorage.removeItem(DRAFT); } catch (e) {} }
+    } catch (e) { errMsg = "Couldn't send. Check your connection and try again."; }
+    saving = false; renderRank();
+  }
+
+
+  /* ---------- results (owner and editors) ---------- */
+  let responses = [], firmFilter = "";
+  function renderResults() {
+    const el = $("#view-results");
+    if (!responses.length) { el.innerHTML = `<h2>Results</h2><div class="empty">No rankings yet. Share this page with each design partner's team as Contributors. Answers appear here as they come in, grouped by firm.</div>`; return; }
+    const firms = {};
+    for (const r of responses) { const k = r.firmKey || firmKey(r.firm); (firms[k] = firms[k] || { name: r.firm, n: 0 }).n++; }
+    if (firmFilter && !firms[firmFilter]) firmFilter = "";
+    const set = firmFilter ? responses.filter(r => (r.firmKey || firmKey(r.firm)) === firmFilter) : responses;
+    const hrs = Object.fromEntries(HOURS.map(h => [h[0], h[2]]));
+    const rows = {};
+    for (const r of set) for (const p of (r.picks || [])) {
+      const item = byId[p.id]; if (!item) continue;
+      const row = rows[p.id] || (rows[p.id] = { item, votes: 0, hours: 0, firsts: 0, partner: 0, team: 0, goods: [] });
+      const pts = PICKS + 1 - (p.rank || PICKS);
+      row.votes += pts; row.hours += hrs[p.hours] || 0; if (p.rank === 1) row.firsts++;
+      if (r.role === "Partner") row.partner += pts; else row.team += pts;
+      if (p.good) row.goods.push(p.good);
+    }
+    const list = Object.values(rows).map(r => Object.assign(r, { score: r.votes, isNew: r.item.today === "Potential new agent" })).sort((a, b) => b.votes - a.votes || b.firsts - a.firsts);
+    if (firmFilter) { list.slice(0, 3).forEach(r => { r.top = true; }); const cut = list.slice(0, 3).map(r => r.votes); list.forEach(r => { if (cut.includes(r.votes) && list.filter(x => x.votes === r.votes).length > 1) r.tie = true; }); }
+    const daily = set.filter(r => r.usage === "Every day").length;
+    const teamCount = t => set.reduce((n, r) => n + (r.picks || []).filter(p => p.team === t).length, 0);
+    const toolCounts = TOOLCATS.map(c => { const m = {}; for (const r of set) for (const x of ((r.tools || {})[c.id] || [])) m[x] = (m[x] || 0) + 1; return { c, list: Object.entries(m).sort((a, b) => b[1] - a[1]) }; }).filter(x => x.list.length);
+    const missing = set.flatMap(r => { const m = r.missing || {}; return m.all ? [{ t: m.team || "", v: m.all }] : Object.entries(m).filter(([k, v]) => v && k !== "team").map(([t, v]) => ({ t, v })); });
+    const pillCls = t => t === "Strong" ? "s" : t === "Medium" || t === "To confirm" ? "m" : t === "Weak" ? "wk" : "nb";
+    el.innerHTML = `<h2>Results</h2>
+      <div class="filters" role="radiogroup" aria-label="Firm">
+        <button class="opt" role="radio" aria-checked="${!firmFilter}" data-firm="">All firms (${responses.length})</button>
+        ${Object.entries(firms).sort((a, b) => a[1].name.localeCompare(b[1].name)).map(([k, f]) => `<button class="opt" role="radio" aria-checked="${firmFilter === k}" data-firm="${esc(k)}">${esc(f.name)} (${f.n})</button>`).join("")}
+      </div>
+      <div class="kpis"><div class="kpi"><div class="v">${set.length}</div><div class="l">${firmFilter ? "people have answered" : "answers across " + Object.keys(firms).length + " firms"}</div></div>
+      <div class="kpi"><div class="v">${teamCount("inv")} / ${teamCount("ir")}</div><div class="l">top-3 picks: Investment / IR</div></div>
+      <div class="kpi"><div class="v">${daily}</div><div class="l">would use the agents every day</div></div></div>
+      <p class="muted">${firmFilter ? "Highlighted rows are the three highest totals for this firm: the shortlist to agree 1–3 priorities from. Any marked as a potential new agent needs a scope check against the current agents first. Check also that at least one is daily work for several people before kick-off." : "Pick a firm to see its shortlist. The all-firms view shows what design partners want most across Lua Invest."}</p>
+      <div class="tbl"><table><thead><tr><th>#</th><th>Outcome</th><th>Team</th><th class="num">Points</th><th class="num">#1 picks</th><th class="num">Hrs/wk today</th><th class="num">Partner / team</th><th>Lua agents</th></tr></thead><tbody>
+      ${list.map((r, i) => `<tr class="${r.top ? "top" : ""}"><td>${i + 1}</td><td><b>${esc(r.item.t)}</b>${r.top ? ` <span class="pill s">Proposed</span>` : ""}${r.top && r.isNew ? ` <span class="pill nb">Check scope first</span>` : ""}${r.tie ? ` <span class="pill m">Tied: their lead decides</span>` : ""}${r.goods.length ? `<div class="small">“${r.goods.slice(0, 3).map(esc).join("” · “")}”</div>` : ""}</td>
+        <td class="small">${esc(teamOf(r.item.team).name)}</td><td class="num"><b>${r.votes}</b></td><td class="num">${r.firsts}</td><td class="num">${r.hours.toFixed(1)}</td><td class="num">${r.partner} / ${r.team}</td>
+        <td><span class="small">${esc(r.item.agents)}</span> <span class="pill ${pillCls(r.item.today)}">${esc(r.item.today)}</span></td></tr>`).join("")}
+      </tbody></table></div>
+      ${missing.length ? `<h3>Outcomes people said were missing</h3><div class="panel"><ul>${missing.map(m => `<li>${esc(m.v)} ${teamOf(m.t) ? `<span class="small">(${esc(teamOf(m.t).name)})</span>` : ""}</li>`).join("")}</ul></div>` : ""}
+      ${toolCounts.length ? `<h3>Tools they use</h3><div class="toolres">${toolCounts.map(x => `<div class="panel"><h3 style="font-size:.95rem">${esc(x.c.name)}</h3><div class="chips">${x.list.map(([n, k]) => `<span class="chip">${esc(n)} · ${k}</span>`).join("")}</div></div>`).join("")}</div>` : ""}
+      <h3>Individual answers</h3>
+      <div class="tbl"><table><thead><tr><th>Firm</th><th>Name</th><th>Role</th><th>Teams</th><th>Their #1s</th><th>Would use</th><th>Notes</th></tr></thead><tbody>
+      ${set.map(r => { const firsts = (r.picks || []).filter(p => p.rank === 1).map(p => byId[p.id]?.t || p.title); return `<tr><td>${esc(r.firm)}</td><td>${r.name ? esc(r.name) : `<span class="muted">Anonymous</span>`}</td><td>${esc(r.role)}</td><td class="small">${(r.teams || []).map(t => esc(teamOf(t)?.name || t)).join(", ")}</td><td>${firsts.map(esc).join("<br>")}</td><td>${esc(r.usage)}</td><td class="small">${esc(r.notes)}</td></tr>`; }).join("")}
+      </tbody></table></div>`;
+    el.querySelectorAll("[data-firm]").forEach(b => b.onclick = () => { firmFilter = b.dataset.firm; renderResults(); });
+  }
+
+  /* ---------- tabs ---------- */
+  function show(view) {
+    if (view === "results" && $("#tab-results").hidden) view = "rank";
+    ["rank", "how", "results"].forEach(v => { $("#view-" + v).hidden = v !== view; $("#tab-" + v).setAttribute("aria-selected", v === view); });
+    try { localStorage.setItem("dp-priorities-view", view); } catch (e) {}
+  }
+  document.querySelectorAll(".tab").forEach(t => t.onclick = () => show(t.dataset.view));
+
+  renderRank();
+  let start = (location.hash || "").slice(1);
+  if (!["rank", "how", "results"].includes(start)) { try { start = localStorage.getItem("dp-priorities-view") || "rank"; } catch (e) { start = "rank"; } }
+  show(start);
+
+  (async () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("dp-submitted-" + CODE) || "null");
+      const hadDraft = !!localStorage.getItem(DRAFT);
+      if (saved && !hadDraft) { state = Object.assign(state, saved, { introDone: true }); submitted = true; }
+    } catch (e) {}
+    if (state.emailOk && state.firm) firmLocked = true;
+    ready = true; renderRank();
+  })();
+})();
+</script>
+
+</body></html>
