@@ -5,6 +5,37 @@
 .gate { display: grid; gap: 16px; padding-block: 12px 4px; }
 .gate-row { display: flex; gap: 10px; flex-wrap: wrap; max-width: 520px; }
 .gate-row .text { flex: 1 1 240px; }
+
+/* welcome screen: shown once, on first open. Petals of the Lua mark assemble around the ring, then the words rise in. */
+:root { --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1); }
+.welcome { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; overflow-y: auto;
+  background: radial-gradient(60% 50% at 50% 38%, var(--tint) 0%, transparent 70%), var(--bg);
+  padding: max(24px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  transition: opacity 260ms var(--ease-out-strong), transform 260ms var(--ease-out-strong); }
+.welcome.out { opacity: 0; transform: scale(0.98); pointer-events: none; }
+.w-inner { display: grid; justify-items: center; gap: 22px; text-align: center; max-width: 760px; }
+.w-mark { width: clamp(96px, 18vw, 148px); height: auto; overflow: visible; }
+.w-mark path { transform-box: view-box; transform-origin: 160px 160px; animation: w-petal 760ms var(--ease-out-strong) both; animation-delay: calc(var(--i) * 45ms); }
+.w-spin { animation: w-spin 60s linear 1.4s infinite; transform-origin: 50% 50%; }
+@keyframes w-petal { from { opacity: 0; transform: rotate(-28deg) scale(0.9); } to { opacity: 1; transform: none; } }
+@keyframes w-spin { to { transform: rotate(360deg); } }
+.w-rise { animation: w-rise 640ms var(--ease-out-strong) both; animation-delay: calc(560ms + var(--d, 0) * 90ms); }
+@keyframes w-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.w-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: .95rem; color: var(--ink); }
+.welcome h1 { font-size: clamp(2.2rem, 6.4vw, 4.2rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.04; text-wrap: balance; }
+.welcome .w-sub { font-size: clamp(1rem, 2.2vw, 1.2rem); color: var(--muted); max-width: 46ch; }
+.w-begin { border: 0; border-radius: 999px; padding: 15px 34px; font: inherit; font-weight: 700; font-size: 1.05rem; color: #fff; cursor: pointer;
+  background: var(--purple); box-shadow: 0 10px 30px -10px var(--purple); transition: transform 140ms var(--ease-out-strong), box-shadow 200ms ease; }
+.w-begin:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) { .w-begin:hover { box-shadow: 0 14px 36px -10px var(--purple); } }
+.w-meta { font-size: .88rem; color: var(--faint); }
+@media (prefers-reduced-motion: reduce) {
+  .w-mark path { animation: w-fade 400ms ease both; animation-delay: 0ms; }
+  .w-spin { animation: none; }
+  .w-rise { animation: w-fade 400ms ease both; animation-delay: 150ms; }
+  .welcome, .welcome.out { transform: none; }
+  @keyframes w-fade { from { opacity: 0; } to { opacity: 1; } }
+}
 </style>
 <title>Design Partner Priorities</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap">
@@ -903,17 +934,46 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
   if (!["rank", "how", "results"].includes(start)) { try { start = localStorage.getItem("dp-priorities-view") || "rank"; } catch (e) { start = "rank"; } }
   show(start);
 
+  /* ---------- welcome screen (first open only) ---------- */
+  function showWelcome() {
+    const w = document.createElement("section");
+    w.className = "welcome"; w.setAttribute("aria-labelledby", "w-title");
+    const mark = document.querySelector(".letterhead svg").cloneNode(true);
+    mark.setAttribute("class", "w-mark"); mark.setAttribute("aria-hidden", "true");
+    [...mark.querySelectorAll("path")].forEach((path, i) => path.style.setProperty("--i", i));
+    w.innerHTML = `<div class="w-inner">
+        <div class="w-spin"></div>
+        <div class="sprint w-eyebrow w-rise" style="--d:0"><span class="sprint-tag">November 2026</span><span>Design Partnership Sprint</span></div>
+        <h1 id="w-title" class="w-rise" style="--d:1">Welcome to the <span class="g">Lua Invest</span> Design Partnership</h1>
+        <p class="w-sub w-rise" style="--d:2">Help us decide what your agent team takes on first<span id="w-firm"></span>. It takes about 15 minutes.</p>
+        <button class="w-begin w-rise" style="--d:3" id="w-begin" type="button">Begin</button>
+        <span class="w-meta w-rise" style="--d:4">4 short slides, then 5 quick steps</span>
+      </div>`;
+    w.querySelector(".w-spin").appendChild(mark);
+    document.body.appendChild(w);
+    document.body.style.overflow = "hidden";
+    const go = () => {
+      state.welcomed = true; saveDraft();
+      w.classList.add("out"); document.body.style.overflow = "";
+      setTimeout(() => w.remove(), 280);
+      window.scrollTo(0, 0); $("#view-rank").focus?.();
+    };
+    w.querySelector("#w-begin").onclick = go;
+    setTimeout(() => w.querySelector("#w-begin").focus({ preventScroll: true }), 50);
+  }
+  if (!state.welcomed && !submitted) showWelcome();
+
   (async () => {
     try {
       const saved = JSON.parse(localStorage.getItem("dp-submitted-" + CODE) || "null");
       const hadDraft = !!localStorage.getItem(DRAFT);
-      if (saved && !hadDraft) { state = Object.assign(state, saved, { introDone: true }); submitted = true; }
+      if (saved && !hadDraft) { state = Object.assign(state, saved, { introDone: true }); submitted = true; document.querySelector(".welcome")?.remove(); document.body.style.overflow = ""; }
     } catch (e) {}
     if (CODE) {
       try {
         const res = await callHook({ action: "lookup", code: CODE });
         linkOk = !!(res.data && res.data.ok);
-        if (linkOk && res.data.firm) { state.firm = res.data.firm; firmLocked = true; }
+        if (linkOk && res.data.firm) { state.firm = res.data.firm; firmLocked = true; const wf = document.getElementById("w-firm"); if (wf) wf.textContent = " at " + res.data.firm; }
       } catch (e) { linkOk = null; }
     }
     ready = true; renderRank();
