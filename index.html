@@ -36,6 +36,12 @@
   .welcome, .welcome.out { transform: none; }
   @keyframes w-fade { from { opacity: 0; } to { opacity: 1; } }
 }
+
+.preview-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40; background: var(--ink); color: var(--bg);
+  padding: 9px max(16px, env(safe-area-inset-right, 0px)) 9px max(16px, env(safe-area-inset-left, 0px)); text-align: center; font-size: .9rem; line-height: 1.4; }
+.preview-bar b { font-weight: 700; }
+.preview-bar .pv-tag { display: inline-block; margin-right: 8px; padding: 1px 9px; border-radius: 999px; background: var(--grad); color: #fff; font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; vertical-align: 1px; }
+.welcome .w-preview { font-size: .88rem; color: var(--faint); }
 </style>
 <title>Design Partner Priorities</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap">
@@ -428,6 +434,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
 </head><body>
 
 
+<div class="preview-bar" id="preview-bar" hidden><span class="pv-tag">Preview</span><b>Sending is off.</b> To answer for your firm, use the link your Lua Invest contact sent you.</div>
 <div class="gradbar"></div>
 <div class="wrap">
 
@@ -636,6 +643,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
   let step = 0, intro = 0, submitted = false, saving = false, errMsg = "";
   const WEBHOOK = "https://webhook.heylua.ai/baseAgent_agent_1790331214509_pnkrtcw8x/dp-survey";
   const CODE = (new URLSearchParams(location.search).get("firm") || "").trim();
+  const PREVIEW = !CODE;
   let firmLocked = false, linkOk = null, ready = false;
   const respondentId = (() => { const k = "dp-respondent-" + CODE; try { let v = localStorage.getItem(k); if (!v) { v = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2)); localStorage.setItem(k, v); } return v; } catch (e) { return String(Date.now()) + Math.random().toString(36).slice(2); } })();
   async function callHook(payload) {
@@ -691,7 +699,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
       $("#edit").onclick = () => { submitted = false; step = 0; renderRank(); };
       return;
     }
-    if (!CODE || linkOk === false || !ready) {
+    if (CODE && (linkOk === false || !ready)) {
       el.innerHTML = !ready && CODE ? `<p class="muted">Opening your survey…</p>`
         : `<div class="gate"><span class="kicker">Survey link</span><h2 class="big">This link <span class="g">isn't valid</span>.</h2>
            <p class="lede">Open the survey link your Lua Invest contact sent you. Each firm has its own link.</p></div>`;
@@ -753,7 +761,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
       ${[0].map(() => `<dt>Your top ${PICKS}</dt><dd><ol>${state.ranks.all.map(id => { const d = state.details[id] || {}; return `<li><b>${esc(byId[id].t)}</b><br><span class="muted" style="font-size:.88rem">${lbl(HOURS, d.hours)} a week · ${lbl(WHO, d.who)}${d.good ? " · \"" + esc(d.good) + "\"" : ""}</span></li>`; }).join("")}</ol>${state.missing.all.trim() ? `<div class="small">Missing${state.missingTeam ? " (" + (state.missingTeam === "ir" ? "Investor Relations" : "Investment team") + ")" : ""}: ${esc(state.missing.all.trim())}</div>` : ""}</dd>`).join("")}
       <dt>How often you'd use it</dt><dd>${esc(state.usage)}</dd>
       <dt>Tools</dt><dd>${TOOLCATS.filter(c => (state.tools[c.id] || []).length).map(c => `<div><span class="muted">${esc(c.name)}:</span> ${state.tools[c.id].map(esc).join(", ")}</div>`).join("") || `<span class="muted">None given</span>`}</dd>${state.notes ? `<dt>Notes</dt><dd>${esc(state.notes)}</dd>` : ""}</dl></div>
-      ${!CODE || linkOk === false ? `<div class="note">This link can't take answers. Open the survey link your Lua Invest contact sent you.</div>` : ""}`;
+      ${PREVIEW ? `<div class="note"><b>This is a preview, so sending is off.</b> To answer for your firm, open the survey link your Lua Invest contact sent you.</div>` : linkOk === false ? `<div class="note">This link can't take answers. Open the survey link your Lua Invest contact sent you.</div>` : ""}`;
     }
     const last = step === STEPS.length - 1;
     const sendable = !!CODE && linkOk !== false && !saving;
@@ -761,7 +769,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
       ${body}
       <div class="nav"><div><button class="btn ghost" id="back">Back</button></div>
       <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end">${errMsg ? `<span class="err" role="alert">${esc(errMsg)}</span>` : ""}
-      ${last ? `<button class="btn primary" id="send" ${sendable ? "" : "disabled"}>${saving ? "Sending…" : "Send my ranking"}</button>` : `<button class="btn primary" id="next">Next</button>`}</div></div>`;
+      ${last ? `<button class="btn primary" id="send" ${sendable ? "" : "disabled"}>${PREVIEW ? "Sending is off in preview" : saving ? "Sending…" : "Send my ranking"}</button>` : `<button class="btn primary" id="next">Next</button>`}</div></div>`;
     bindRank();
   }
 
@@ -947,7 +955,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
         <h1 id="w-title" class="w-rise" style="--d:1">Welcome to the <span class="g">Lua Invest</span> Design Partnership</h1>
         <p class="w-sub w-rise" style="--d:2">Help us decide what your agent team takes on first<span id="w-firm"></span>. It takes about 15 minutes.</p>
         <button class="w-begin w-rise" style="--d:3" id="w-begin" type="button">Begin</button>
-        <span class="w-meta w-rise" style="--d:4">4 short slides, then 5 quick steps</span>
+        <span class="w-meta w-rise" style="--d:4">4 short slides, then 5 quick steps${PREVIEW ? " · Preview: sending is off" : ""}</span>
       </div>`;
     w.querySelector(".w-spin").appendChild(mark);
     document.body.appendChild(w);
@@ -961,6 +969,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
     w.querySelector("#w-begin").onclick = go;
     setTimeout(() => w.querySelector("#w-begin").focus({ preventScroll: true }), 50);
   }
+  if (PREVIEW) $("#preview-bar").hidden = false;
   if (!state.welcomed && !submitted) showWelcome();
 
   (async () => {
