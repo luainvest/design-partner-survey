@@ -601,7 +601,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
   const byId = Object.fromEntries(ITEMS.map(i => [i.id, i]));
   const teamOf = id => TEAMS.find(t => t.id === id);
 
-  let state = { firm: "", name: "", role: "", teams: ["all"], open: "", ranks: { all: [] }, missing: { all: "" }, missingTeam: "", details: {}, usage: "", notes: "", tools: {}, email: "", emailOk: false };
+  let state = { firm: "", name: "", role: "", teams: ["all"], open: "", ranks: { all: [] }, missing: { all: "" }, missingTeam: "", details: {}, usage: "", notes: "", tools: {} };
   let step = 0, intro = 0, submitted = false, saving = false, errMsg = "";
   const WEBHOOK = "https://webhook.heylua.ai/baseAgent_agent_1790331214509_pnkrtcw8x/dp-survey";
   const CODE = (new URLSearchParams(location.search).get("firm") || "").trim();
@@ -660,31 +660,10 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
       $("#edit").onclick = () => { submitted = false; step = 0; renderRank(); };
       return;
     }
-    if (!state.emailOk) {
-      el.innerHTML = `<div class="gate">
-        <span class="kicker">Before you start</span>
-        <h2 class="big">Enter your <span class="g">work email</span>.</h2>
-        <p class="lede">We use it only to check you're at one of our design partner firms. We keep your email's domain, not your address, so your answers stay anonymous unless you add your name.</p>
-        ${!CODE ? `<div class="note">This page needs your firm's survey link. Open the link your Lua Invest contact sent you.</div>` : `
-        <form id="gate-form" class="gate-row" novalidate><label class="sr" for="f-email">Work email</label>
-          <input class="text" id="f-email" type="email" autocomplete="email" inputmode="email" value="${esc(state.email)}" placeholder="you@yourfirm.com">
-          <button class="btn primary" id="gate-go" type="submit" ${saving ? "disabled" : ""}>${saving ? "Checking…" : "Continue"}</button></form>`}
-        ${errMsg ? `<p class="err" role="alert">${esc(errMsg)}</p>` : ""}
-      </div>`;
-      const gf = $("#gate-form");
-      if (gf) gf.onsubmit = async (e) => {
-        e.preventDefault();
-        const em = ($("#f-email").value || "").trim();
-        state.email = em;
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { errMsg = "Enter a valid work email."; renderRank(); return; }
-        saving = true; errMsg = ""; renderRank();
-        try {
-          const res = await callHook({ action: "lookup", code: CODE, email: em });
-          if (res.readable && !(res.data && res.data.ok)) { errMsg = (res.data && res.data.error) || "We couldn't check that email. Try again."; }
-          else { if (res.readable && res.data.firm) { state.firm = res.data.firm; firmLocked = true; } state.emailOk = true; saveDraft(); }
-        } catch (err) { errMsg = "We couldn't reach Lua Invest. Check your connection and try again."; }
-        saving = false; renderRank();
-      };
+    if (!CODE || linkOk === false || !ready) {
+      el.innerHTML = !ready && CODE ? `<p class="muted">Opening your survey…</p>`
+        : `<div class="gate"><span class="kicker">Survey link</span><h2 class="big">This link <span class="g">isn't valid</span>.</h2>
+           <p class="lede">Open the survey link your Lua Invest contact sent you. Each firm has its own link.</p></div>`;
       return;
     }
     if (!state.introDone) {
@@ -854,7 +833,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
       missing: { text: state.missing.all.trim(), team: state.missing.all.trim() ? state.missingTeam : "" },
       tools: Object.fromEntries(TOOLCATS.map(c => [c.id, (state.tools[c.id] || []).slice()])), usage: state.usage, notes: state.notes.trim() };
     try {
-      const res = await callHook({ action: "submit", code: CODE, email: state.email, respondentId, answer });
+      const res = await callHook({ action: "submit", code: CODE, respondentId, answer });
       if (res.readable && !(res.data && res.data.ok)) { errMsg = (res.data && res.data.error) || "Couldn't send. Try again in a moment."; }
       else { submitted = true; try { localStorage.setItem("dp-submitted-" + CODE, JSON.stringify(state)); localStorage.removeItem(DRAFT); } catch (e) {} }
     } catch (e) { errMsg = "Couldn't send. Check your connection and try again."; }
@@ -930,7 +909,13 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
       const hadDraft = !!localStorage.getItem(DRAFT);
       if (saved && !hadDraft) { state = Object.assign(state, saved, { introDone: true }); submitted = true; }
     } catch (e) {}
-    if (state.emailOk && state.firm) firmLocked = true;
+    if (CODE) {
+      try {
+        const res = await callHook({ action: "lookup", code: CODE });
+        linkOk = !!(res.data && res.data.ok);
+        if (linkOk && res.data.firm) { state.firm = res.data.firm; firmLocked = true; }
+      } catch (e) { linkOk = null; }
+    }
     ready = true; renderRank();
   })();
 })();
