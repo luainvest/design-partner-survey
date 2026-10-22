@@ -1,5 +1,8 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f6fa">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e0f1c">
+<meta name="color-scheme" content="light dark">
 <meta name="robots" content="noindex">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}
 .gate { display: grid; gap: 16px; padding-block: 12px 4px; }
@@ -42,6 +45,46 @@
 .preview-bar b { font-weight: 700; }
 .preview-bar .pv-tag { display: inline-block; margin-right: 8px; padding: 1px 9px; border-radius: 999px; background: var(--grad); color: #fff; font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; vertical-align: 1px; }
 .welcome .w-preview { font-size: .88rem; color: var(--faint); }
+
+/* phones: no grey tap flash, no font inflation, 16px inputs (no zoom on focus), controls not text-selectable,
+   press feedback on touch-down, and hover styles only where a real pointer exists */
+html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
+input, textarea, select, .text { font-size: 16px; }
+button, .opt, .item, .rank-opt, .tab, .org-team, .w-begin, .btn { touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.btn, .opt, .rank-opt, .mv button { transition-property: transform, background-color, border-color, box-shadow; transition-duration: 120ms; transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
+.btn:active:not(:disabled), .opt:active, .mv button:active:not(:disabled) { transform: scale(0.97); }
+.rank-opt:active { transform: scale(0.99); }
+@media (hover: hover) and (pointer: fine) {
+  .opt:hover { border-color: var(--indigo); }
+  .item:hover:not(:disabled) { border-color: var(--indigo); }
+  .org-team:hover { border-color: var(--indigo); }
+  .rank-opt:hover:not(:disabled) { border-color: var(--indigo); }
+}
+@media (max-width: 600px) {
+  .wrap { gap: 20px; padding-block: 18px 48px; }
+  .card { padding: 16px; gap: 16px; border-radius: 12px; }
+  .slide { gap: 14px; }
+  h2.big { font-size: 1.65rem; }
+  .slide .lede { font-size: 1rem; }
+  .letterhead .doctype { display: none; }
+  .eta { border-radius: 14px; align-items: flex-start; }
+  .nav { position: sticky; bottom: 0; background: var(--surface); margin-inline: -16px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); z-index: 3; }
+  .nav .btn { padding: 12px 18px; }
+  .rank-opt .mv button { width: 40px; height: 40px; }
+  .opts .opt { padding: 10px 14px; }
+  .h-row { grid-template-columns: minmax(0,1fr); }
+  .h-row::before, .h-row::after { display: none; }
+  .preview-bar { font-size: .8rem; }
+}
+
+.net-names { display: none; }
+@media (max-width: 600px) {
+  .net .nl:not(.c) { display: none; }
+  .net-names { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; padding: 2px 10px 6px; }
+  .net-names .nn { font-size: .72rem; color: #e6e7f2; border: 1px solid #34365a; border-radius: 999px; padding: 2px 9px; background: #15162a; }
+  .net-names .nn.ir { border-color: rgba(255,106,168,.55); color: #ff8fbd; }
+  .net-names .nn.sh { border-style: dashed; border-color: #8b8ef0; color: #b1b4f5; }
+}
 </style>
 <title>Design Partner Priorities</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap">
@@ -110,7 +153,7 @@ button, input, textarea { font: inherit; color: inherit; }
 textarea.text { min-height: 84px; resize: vertical; }
 .opts { display: flex; flex-wrap: wrap; gap: 8px; }
 .opt { border: 1.5px solid var(--line); background: var(--surface); border-radius: 100px; padding: 8px 15px; cursor: pointer; font-weight: 500; font-size: .94rem; }
-.opt:hover { border-color: var(--indigo); }
+
 .opt[aria-pressed="true"], .opt[aria-checked="true"] { border-color: var(--purple); background: var(--tint); color: var(--ink); font-weight: 600; }
 .counter { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-weight: 600; }
 .dots { display: flex; gap: 5px; }
@@ -120,7 +163,7 @@ textarea.text { min-height: 84px; resize: vertical; }
 .group h3 { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--indigo); margin-top: 6px; }
 .items { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
 .item { text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: 12px; padding: 12px 14px 12px 44px; cursor: pointer; position: relative; display: grid; gap: 3px; min-width: 0; }
-.item:hover:not(:disabled) { border-color: var(--indigo); }
+
 .item::before { content: ""; position: absolute; left: 14px; top: 14px; width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--faint); }
 .item[aria-pressed="true"] { border-color: var(--purple); background: var(--tint-2); }
 .item[aria-pressed="true"]::before { background: var(--purple); border-color: var(--purple); }
@@ -241,7 +284,7 @@ footer { border-top: 1px solid var(--line); padding-top: 14px; display: flex; ju
 .org-col { position: relative; display: grid; gap: 8px; align-content: start; min-width: 0; }
 .org-col::before { content: ""; position: absolute; top: -22px; left: 50%; width: 2px; height: 22px; background: var(--faint); opacity: .5; }
 .org-team { position: relative; display: grid; gap: 3px; text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: 14px; padding: 16px 16px 16px 50px; cursor: pointer; }
-.org-team:hover { border-color: var(--indigo); }
+
 .org-team .ot-check { position: absolute; left: 16px; top: 18px; width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--faint); }
 .org-team[aria-pressed="true"] { border-color: var(--purple); background: var(--tint-2); box-shadow: 0 0 0 3px var(--tint); }
 .org-team[aria-pressed="true"] .ot-check { background: var(--purple); border-color: var(--purple); }
@@ -258,7 +301,7 @@ footer { border-top: 1px solid var(--line); padding-top: 14px; display: flex; ju
 .rt-head { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .rank-list { display: grid; gap: 8px; }
 .rank-opt { display: grid; grid-template-columns: 38px minmax(0,1fr); gap: 12px; align-items: center; text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: 12px; padding: 10px 12px; cursor: pointer; }
-.rank-opt:hover:not(:disabled) { border-color: var(--indigo); }
+
 .rank-opt .rb { width: 34px; height: 34px; border-radius: 50%; border: 1.5px dashed var(--faint); display: grid; place-items: center; font-weight: 800; font-size: .9rem; color: #fff; }
 .rank-opt[aria-pressed="true"] { border-color: var(--purple); background: var(--tint-2); }
 .rank-opt[aria-pressed="true"] .rb { background: var(--purple); border: 0; }
@@ -277,7 +320,7 @@ footer { border-top: 1px solid var(--line); padding-top: 14px; display: flex; ju
 .top-zone { min-height: calc(var(--slots) * 62px + (var(--slots) - 1) * 8px + 16px); padding: 8px; border: 2px dashed var(--purple); border-radius: 14px; background: var(--tint-2); align-content: start; position: relative; }
 .top-zone:empty::before { content: "Drag your #1 outcome here"; position: absolute; inset: 0; display: grid; place-items: center; color: var(--purple); font-weight: 600; font-size: .92rem; }
 .top-zone.full { border-style: solid; }
-.rank-opt { grid-template-columns: 38px minmax(0,1fr) auto !important; touch-action: none; user-select: none; -webkit-user-select: none; }
+.rank-opt { grid-template-columns: 38px minmax(0,1fr) auto !important; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
 .pool .rank-opt { cursor: grab; }
 .pool .rank-opt[aria-disabled="true"] { opacity: .55; cursor: grab; }
 .rank-opt.ranked { border-color: var(--purple); background: var(--surface); cursor: grab; }
@@ -728,13 +771,13 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
       const pool = ITEMS.filter(i => !r.includes(i.id));
       const agentCol = i => `<span class="ag"><span class="ag-team">${i.team === "ir" ? "Investor Relations" : "Investment team"}</span>${i.agentList.map(a => `<b>${esc(a)}</b>`).join("")}${i.newAgent ? `<span class="ag-new">New agent: ${esc(i.newAgent)}</span>` : ""}</span>`;
       const outCol = i => `<span class="rt"><b>${esc(i.t)}</b><span>${esc(i.d)}</span></span>`;
-      body = `<div class="q"><span class="qt">3. Rank the outcomes you want most.</span><p class="help">Each tile shows the agent on the left and the outcome it delivers on the right. Drag your top ${PICKS} into the box, with your #1 at the top. You can also tap a tile to add it, and use the arrows to reorder.</p></div>
+      body = `<div class="q"><span class="qt">3. Rank the outcomes you want most.</span><p class="help">Each tile shows the agent on the left and the outcome it delivers on the right. ${matchMedia("(pointer: coarse)").matches ? `Tap your top ${PICKS} in order, your #1 first. Use the arrows to reorder, or press and hold a tile to drag it.` : `Drag your top ${PICKS} into the box, with your #1 at the top. You can also click a tile to add it, and use the arrows to reorder.`}</p></div>
       <div class="legend"><span><i class="lg inv"></i>Investment team</span><span><i class="lg ir"></i>Investor Relations</span><span><i class="lg nw"></i>Needs a new agent</span></div>
       <div class="rank-team"><div class="rt-head"><h3>Your top ${PICKS}</h3><span class="dots">${Array.from({ length: PICKS }, (_, i) => `<i class="${i < r.length ? "on" : ""}"></i>`).join("")}</span><span class="muted" style="font-size:.88rem">${r.length} of ${PICKS} ranked</span></div>
         <ol class="top-zone ${full ? "full" : ""}" data-zone="top" data-team="all" style="--slots:${PICKS}">${r.map((id, k) => { const i = byId[id];
           return `<li class="rank-opt ranked team-${i.team}${i.newAgent ? " is-new" : ""}" data-id="${id}"><span class="rb">#${k + 1}</span>${agentCol(i)}${outCol(i)}
           <span class="mv"><button data-move="all|${k}|-1" aria-label="Move up" ${k === 0 ? "disabled" : ""}>↑</button><button data-move="all|${k}|1" aria-label="Move down" ${k === r.length - 1 ? "disabled" : ""}>↓</button><button data-remove="all|${id}" aria-label="Remove from top ${PICKS}">✕</button></span></li>`; }).join("")}</ol>
-        ${pool.length ? `<div class="zone-label">${full ? "Other outcomes · remove one above to swap" : "All outcomes · drag up or tap to add"}</div>
+        ${pool.length ? `<div class="zone-label">${full ? "Other outcomes · remove one above to swap" : (matchMedia("(pointer: coarse)").matches ? "All outcomes · tap to add" : "All outcomes · drag up or click to add")}</div>
         <ul class="pool" data-zone="pool" data-team="all">${pool.map(i => `<li class="rank-opt team-${i.team}${i.newAgent ? " is-new" : ""}" data-id="${i.id}" tabindex="0" role="button" aria-label="Add: ${esc(i.t)}" data-add="all|${i.id}" ${full ? 'aria-disabled="true"' : ""}><span class="rb grip" aria-hidden="true">⋮⋮</span>${agentCol(i)}${outCol(i)}</li>`).join("")}</ul>` : ""}
         <div class="missing-box"><span class="sub" id="mt-q">Missing an outcome? <span class="muted" style="font-weight:400">(optional)</span></span>
         <div class="opts" role="radiogroup" aria-labelledby="mt-q">${[["inv", "Investment team"], ["ir", "Investor Relations"]].map(([k, l]) => `<button class="opt mteam-${k}" role="radio" aria-checked="${state.missingTeam === k}" data-mteam="${k}">${l}</button>`).join("")}</div>
@@ -798,6 +841,11 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
       s += `<text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${anchor}" class="nl${p.sh ? " sh" : p.ir ? " ir" : ""}">${p.nm.toUpperCase()}</text>`;
     }
     svg.innerHTML = s;
+    const panel = svg.closest(".net-panel");
+    if (panel && !panel.querySelector(".net-names")) {
+      const chip = (p) => `<span class="nn ${p.ir ? "ir" : p.sh ? "sh" : ""}">${p.nm}</span>`;
+      panel.querySelector(".net-cap").insertAdjacentHTML("afterend", `<div class="net-names">${pts.filter(p => !p.ir && !p.sh).map(chip).join("")}${pts.filter(p => p.ir).map(chip).join("")}${pts.filter(p => p.sh).map(chip).join("")}</div>`);
+    }
   }
 
   function go(to) { errMsg = ""; step = to; saveDraft(); renderRank(); $("#view-rank").scrollIntoView({ block: "start", behavior: "smooth" }); }
@@ -831,7 +879,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
     if (window.Sortable) el.querySelectorAll("[data-zone]").forEach(list => {
       const t = list.dataset.team;
       Sortable.create(list, {
-        group: "rank-" + t, animation: 150, forceFallback: true, fallbackOnBody: true, fallbackTolerance: 3, filter: "button", preventOnFilter: false, ghostClass: "drag-ghost", chosenClass: "drag-chosen",
+        group: "rank-" + t, animation: 150, forceFallback: true, fallbackOnBody: true, fallbackTolerance: 3, delay: 180, delayOnTouchOnly: true, touchStartThreshold: 6, filter: "button", preventOnFilter: false, ghostClass: "drag-ghost", chosenClass: "drag-chosen",
         onMove: evt => !(evt.to.dataset.zone === "top" && evt.from !== evt.to && evt.to.children.length >= PICKS),
         onEnd: () => {
           const top = el.querySelector(`.top-zone[data-team="${t}"]`);
