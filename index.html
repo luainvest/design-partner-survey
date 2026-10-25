@@ -553,7 +553,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
         <div class="hier">
           <div class="h-root">Your fund</div>
           <div class="h-row">
-            <div class="h-team"><span class="h-dot vc"></span><b>Investment team</b><span>VC Agent Team · 9 agents</span></div>
+            <div class="h-team"><span class="h-dot vc"></span><b>Investment team</b><span>VC Agent Team · 8 agents</span></div>
             <div class="h-team ir"><span class="h-dot irc"></span><b>Investor Relations</b><span>IR Agent Team · 3 agents</span></div>
           </div>
           <div class="h-shared"><span class="h-dot sh"></span>Shared by both: Meeting Prep · Personal Assistant</div>
@@ -612,7 +612,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
     <p class="muted">Every agent runs on one shared memory, so what one agent learns about a company, LP or partner, the others already know.</p>
     <div class="agentmap">
       <div class="panel"><h3>VC Agent Team</h3>
-        <div class="stage"><span class="sn">Find</span><span>Deal Sourcing · Market Monitoring</span></div>
+        <div class="stage"><span class="sn">Find</span><span>Deal Sourcing</span></div>
         <div class="stage"><span class="sn">Screen</span><span>Deal Screener</span></div>
         <div class="stage"><span class="sn">Diligence</span><span>Research Analyst · Financial Analyst</span></div>
         <div class="stage"><span class="sn">Decide</span><span>IC Memo · Contrarian Agent</span></div>
@@ -646,7 +646,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
 (function () {
   const TEAMS = [
     { id: "inv", name: "Investment team", sub: "VC Agent Team", d: "Finding, screening, investing in and supporting companies.",
-      agents: [["Deal Sourcing", "Finds companies that fit your thesis"], ["Market Monitoring", "Watches your sectors"], ["Deal Screener", "Reads every inbound deck"], ["Research Analyst", "Company and market research"], ["Financial Analyst", "Cap tables, returns, exit cases"], ["IC Memo", "Drafts the memo in your template"], ["Contrarian Agent", "Argues the bear case"], ["Deal Execution", "Term sheet to funds out"], ["Portfolio Monitoring", "Tracks each holding"], ["Talent Scouting", "Finds hires for portcos"], ["Meeting Prep", "A brief before every meeting"]],
+      agents: [["Deal Sourcing", "Finds companies that fit your thesis"], ["Deal Screener", "Reads every inbound deck"], ["Research Analyst", "Company and market research"], ["Financial Analyst", "Cap tables, returns, exit cases"], ["IC Memo", "Drafts the memo in your template"], ["Contrarian Agent", "Argues the bear case"], ["Deal Execution", "Term sheet to funds out"], ["Portfolio Monitoring", "Tracks each holding"], ["Talent Scouting", "Finds hires for portcos"], ["Meeting Prep", "A brief before every meeting"]],
       potential: [["Portfolio pulse", "Daily list of founders to call"], ["Portco agent team", "An agent team for each founder"]] },
     { id: "ir", name: "Investor Relations", sub: "IR Agent Team", d: "Raising the fund, LP diligence and reporting.",
       agents: [["Pipeline Management", "Runs the raise, flags quiet LPs"], ["Due Diligence Agent", "Answers DDQs from your vault"], ["LP Reporting Agent", "Drafts and sends LP updates"], ["Meeting Prep", "A brief before every LP meeting"], ["Personal Assistant", "Inbox, calendar, follow-ups"]],
@@ -654,7 +654,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
   ];
   const ITEMS = [
     { id: "inv-scr", agentList: ["Deal Screener"], team: "inv", t: "Every inbound deck checked for mandate fit, instantly", d: "Founders get a fast answer and you only spend time on what fits. Put it on your website as a founder-facing screener to grow the top of your funnel.", agents: "Deal Screener", today: "Strong" },
-    { id: "res-src", agentList: ["Deal Sourcing", "Market Monitoring", "Talent Scouting"], team: "inv", t: "Find the best companies before other funds do", d: "New companies and market signals matched to your thesis, plus talent tracking that catches key signals, like a senior operator leaving to start something.", agents: "Deal Sourcing, Market Monitoring, Talent Scouting", today: "Medium" },
+    { id: "res-src", agentList: ["Deal Sourcing", "Talent Scouting"], team: "inv", t: "Find the best companies before other funds do", d: "New companies and market signals matched to your thesis, plus talent tracking that catches key signals, like a senior operator leaving to start something.", agents: "Deal Sourcing, Talent Scouting", today: "Medium" },
     { id: "inv-dd", agentList: ["Research Analyst", "Financial Analyst", "IC Memo", "Contrarian Agent"], team: "inv", t: "Thorough investment diligence, in a fraction of the time", d: "Research, returns models and an IC-ready memo in your template, with every figure sourced and the bear case already argued.", agents: "Research Analyst, Financial Analyst, IC Memo, Contrarian", today: "Strong" },
     { id: "inv-close", agentList: ["Deal Execution"], team: "inv", t: "Close deals faster, with nothing missed", d: "DD checklists, documents and sign-offs tracked from term sheet to funds out.", agents: "Deal Execution", today: "To confirm" },
     { id: "val-pulse", agentList: ["Portfolio Monitoring"], newAgent: "Portfolio pulse", team: "inv", t: "Know which portfolio companies need you, every morning", d: "A daily ranked list of founders to call and why: runway, missed targets, key hires and new risks. Every holding is tracked against your IC case, so you spot drift weeks before the board meeting.", agents: "Portfolio Monitoring + new pulse agent", today: "Potential new agent" },
@@ -818,7 +818,7 @@ h2.big .g { background: var(--exgrad); -webkit-background-clip: text; background
 
   function drawNet(svg) {
     if (!svg) return;
-    const names = ["Deal Sourcing", "Deal Screener", "Research Analyst", "Financial Analyst", "IC Memo", "Contrarian Agent", "LP Reporting", "Due Diligence", "Pipeline Management", "Portfolio Monitoring", "Market Monitoring", "Personal Assistant", "Meeting Prep", "Talent Scouting"];
+    const names = ["Deal Sourcing", "Deal Screener", "Research Analyst", "Financial Analyst", "IC Memo", "Contrarian Agent", "LP Reporting", "Due Diligence", "Pipeline Management", "Portfolio Monitoring", "Personal Assistant", "Meeting Prep", "Talent Scouting"];
     const shared = ["Personal Assistant", "Meeting Prep"], ir = ["LP Reporting", "Due Diligence", "Pipeline Management"];
     const IRC = "#ff6aa8", cx = 350, cy = 225, r = 160, n = names.length;
     const pts = names.map((nm, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return { nm, a, x: cx + r * Math.cos(a), y: cy + r * Math.sin(a), ir: ir.includes(nm), sh: shared.includes(nm) }; });
